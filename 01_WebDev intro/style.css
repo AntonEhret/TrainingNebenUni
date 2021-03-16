@@ -1,0 +1,100 @@
+
+@media only screen and (min-width: 600px) {
+	body {
+		padding-left: 25%;
+		padding-right: 25%;
+	}
+}
+
+@media only screen and (max-width: 600px) {
+	body {
+		padding-left: 5%;
+		padding-right: 5%;
+	}
+}
+
+h1 {
+	color: #e91e63;
+	text-align: center;
+	padding-bottom: 10px;
+	border-bottom: 1px dotted #000;
+	font-family: monospace;
+	font-size: 38px;
+}
+
+h2 {
+	color: #00690e;
+	font-family: monospace;
+    font-size: 28px;
+}
+
+li {
+	color: #000;
+    font-size: 18px;
+}
+
+p {
+	font-size: 18px;
+    font-family: monospace;
+    text-align: justify;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	background-color: yellow;
+}
+
+button {
+	cursor: pointer;
+}
+
+table {
+ 	border-collapse: collapse;
+	width: 100%;
+}
+
+th, td {
+ 	border: 1px solid #cccccc;
+ 	text-align: left;
+ 	height: 25px;
+ 	padding: 5px;
+}
+
+tr:nth-child(even) {
+	background-color: #f2f2f2;
+}
+
+th {
+	background-color: #00ab07;
+    color: #fff;
+}
+
+.section-div {
+	border: 3px solid #3a3a3a;
+	padding: 25px 10px 25px 10px;
+	margin-top: 10px;
+	margin-bottom: 10px;
+	text-align: center;
+	background-color: #7a8eff;
+	color: #fff;
+	font-size: 18px;
+	font-family: monospace;
+	box-shadow: 3px 5px 2px #bbbbbb;
+}
+
+.section-div:hover {
+	background-color: green;
+	cursor: pointer;
+}
+
+.section-red {
+	background-color: #ff5d5d;
+}
+
+.section-boxes {
+	margin-top: 30px;
+}
+

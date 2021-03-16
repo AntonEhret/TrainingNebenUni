@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<!-- saved from url=(0041)https://rstudio.github.io/DT/options.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+
+<meta name="generator" content="pandoc">
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE">
+
+
+
+
+<title>DataTables Options</title>
+
+<script src="./DataTables Options_files/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="./DataTables Options_files/flatly.min.css" rel="stylesheet">
+<script src="./DataTables Options_files/bootstrap.min.js"></script>
+<script src="./DataTables Options_files/html5shiv.min.js"></script>
+<script src="./DataTables Options_files/respond.min.js"></script>
+<script src="./DataTables Options_files/tabsets.js"></script>
+<script src="./DataTables Options_files/htmlwidgets.js"></script>
+<link href="./DataTables Options_files/datatables-crosstalk.css" rel="stylesheet">
+<script src="./DataTables Options_files/datatables.js"></script>
+<link href="./DataTables Options_files/jquery.dataTables.min.css" rel="stylesheet">
+<link href="./DataTables Options_files/jquery.dataTables.extra.css" rel="stylesheet">
+<script src="./DataTables Options_files/jquery.dataTables.min.js"></script>
+<link href="./DataTables Options_files/crosstalk.css" rel="stylesheet">
+<script src="./DataTables Options_files/crosstalk.min.js"></script>
+<link rel="stylesheet" href="./DataTables Options_files/font-awesome.min.css">
+
+
+<link rel="stylesheet" href="./DataTables Options_files/style-1.css" type="text/css">
+<link rel="stylesheet" href="./DataTables Options_files/style-2.css" type="text/css">
+<script src="./DataTables Options_files/script-7.js"></script>
+<link rel="stylesheet" href="./DataTables Options_files/style-3.css" type="text/css">
+
+
+<link rel="stylesheet" href="./DataTables Options_files/style-4.css" type="text/css">
+
+<link rel="stylesheet" href="./DataTables Options_files/site.css" type="text/css">
+
+
+
+<link rel="stylesheet" href="./DataTables Options_files/style-5.css" type="text/css">
+
+
+
+<!-- tabsets -->
+
+<link rel="stylesheet" href="./DataTables Options_files/style-6.css" type="text/css">
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<nav class="navbar navbar-default navbar-fixed-top">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="https://rstudio.github.io/DT/">DT</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li class="active"><a href="https://rstudio.github.io/DT/options.html">Options</a></li>
+        <li><a href="https://rstudio.github.io/DT/functions.html">Functions</a></li>
+        <li><a href="https://rstudio.github.io/DT/server.html">Server-side Processing</a></li>
+        <li><a href="https://rstudio.github.io/DT/extensions.html">Extensions</a></li>
+        <li><a href="https://rstudio.github.io/DT/plugins.html">Plug-ins</a></li>
+        <li><a href="https://rstudio.github.io/DT/shiny.html">Shiny</a></li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li><a href="https://github.com/rstudio/DT" title="View Source on Github"><i class="fa fa-github fa-lg"></i></a></li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</nav><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">DataTables Options</h1>
+
+</div>
+
+
+<hr>
+<p><strong>DataTables</strong> has a large number of <a href="http://datatables.net/reference/option">initialization options</a>, which make it very flexible to customize the table. You can write these options in a list in R, and <code>datatable()</code> will automatically convert them to JSON as needed by <strong>DataTables</strong>.</p>
+<div id="default-configurations" class="section level1">
+<h1><span class="header-section-number">1</span> Default Configurations</h1>
+<p>The <strong>DT</strong> package modified the default behavior of <strong>DataTables</strong> in these aspects:</p>
+<ul>
+<li>The table is not ordered by default (<strong>DataTables</strong> orders a table by its first column by default);</li>
+<li>Ordered columns are not highlighted by default (the <strong>DataTables</strong> option <code>orderClasses</code> is changed from <code>TRUE</code> to <code>FALSE</code>);</li>
+<li>Numeric columns are always aligned to the right, since it rarely makes sense for numbers to be aligned to the left;</li>
+<li>The option <code>autoWidth</code> is set to <code>FALSE</code> by default, so that <strong>DataTables</strong> does not calculate and put hard-coded width values on the table columns;
+<ul>
+<li><p>One <a href="https://github.com/rstudio/DT/issues/29">known issue</a> with <code>autoWidth = FALSE</code> is that the <code>width</code> option for columns will not work, so if you want to configure widths for columns, you have to use <code>autoWidth = TRUE</code>, e.g.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="https://rstudio.github.io/DT/options.html#cb1-1"></a><span class="kw">datatable</span>(..., <span class="dt">options =</span> <span class="kw">list</span>(</span>
+<span id="cb1-2"><a href="https://rstudio.github.io/DT/options.html#cb1-2"></a>  <span class="dt">autoWidth =</span> <span class="ot">TRUE</span>,</span>
+<span id="cb1-3"><a href="https://rstudio.github.io/DT/options.html#cb1-3"></a>  <span class="dt">columnDefs =</span> <span class="kw">list</span>(<span class="kw">list</span>(<span class="dt">width =</span> <span class="st">'200px'</span>, <span class="dt">targets =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">3</span>)))</span>
+<span id="cb1-4"><a href="https://rstudio.github.io/DT/options.html#cb1-4"></a>))</span></code></pre></li>
+</ul></li>
+<li>When using the <a href="https://rstudio.github.io/DT/server.html">server-side processing</a> mode, the option <code>processing = TRUE</code> is set as the default to show the processing indicator (<strong>DataTables</strong>’ default is always <code>FALSE</code>);</li>
+<li>The option <code>searchDelay</code> is set to <code>1000</code> (1 second) by default;</li>
+</ul>
+</div>
+<div id="initialization-options" class="section level1">
+<h1><span class="header-section-number">2</span> Initialization Options</h1>
+<p>We can pass initialization options to <code>datatable()</code> via the <code>options</code> argument. For example, we center the 5th column in the table below<a href="https://rstudio.github.io/DT/options.html#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>, and customize the length menu:</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="https://rstudio.github.io/DT/options.html#cb2-1"></a><span class="kw">datatable</span>(<span class="kw">head</span>(iris, <span class="dv">20</span>), <span class="dt">options =</span> <span class="kw">list</span>(</span>
+<span id="cb2-2"><a href="https://rstudio.github.io/DT/options.html#cb2-2"></a>  <span class="dt">columnDefs =</span> <span class="kw">list</span>(<span class="kw">list</span>(<span class="dt">className =</span> <span class="st">'dt-center'</span>, <span class="dt">targets =</span> <span class="dv">5</span>)),</span>
+<span id="cb2-3"><a href="https://rstudio.github.io/DT/options.html#cb2-3"></a>  <span class="dt">pageLength =</span> <span class="dv">5</span>,</span>
+<span id="cb2-4"><a href="https://rstudio.github.io/DT/options.html#cb2-4"></a>  <span class="dt">lengthMenu =</span> <span class="kw">c</span>(<span class="dv">5</span>, <span class="dv">10</span>, <span class="dv">15</span>, <span class="dv">20</span>)</span>
+<span id="cb2-5"><a href="https://rstudio.github.io/DT/options.html#cb2-5"></a>))</span></code></pre>
+<div id="htmlwidget-1" style="width:100%;height:auto;" class="datatables html-widget html-widget-static-bound"><div id="DataTables_Table_0_wrapper" class="dataTables_wrapper no-footer"><div class="dataTables_length" id="DataTables_Table_0_length"><label>Show <select name="DataTables_Table_0_length" aria-controls="DataTables_Table_0" class=""><option value="5">5</option><option value="10">10</option><option value="15">15</option><option value="20">20</option></select> entries</label></div><div id="DataTables_Table_0_filter" class="dataTables_filter"><label>Search:<input type="search" class="" placeholder="" aria-controls="DataTables_Table_0"></label></div><table class="display dataTable no-footer" id="DataTables_Table_0" role="grid" aria-describedby="DataTables_Table_0_info">
+  <thead>
+    <tr role="row"><th class="sorting_disabled" rowspan="1" colspan="1" aria-label=" "> </th><th class="dt-right sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Sepal.Length: activate to sort column ascending">Sepal.Length</th><th class="dt-right sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Sepal.Width: activate to sort column ascending">Sepal.Width</th><th class="dt-right sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Petal.Length: activate to sort column ascending">Petal.Length</th><th class="dt-right sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Petal.Width: activate to sort column ascending">Petal.Width</th><th class="dt-center sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Species: activate to sort column ascending">Species</th></tr>
+  </thead>
+<tbody><tr role="row" class="odd"><td>1</td><td class=" dt-right">5.1</td><td class=" dt-right">3.5</td><td class=" dt-right">1.4</td><td class=" dt-right">0.2</td><td class=" dt-center">setosa</td></tr><tr role="row" class="even"><td>2</td><td class=" dt-right">4.9</td><td class=" dt-right">3</td><td class=" dt-right">1.4</td><td class=" dt-right">0.2</td><td class=" dt-center">setosa</td></tr><tr role="row" class="odd"><td>3</td><td class=" dt-right">4.7</td><td class=" dt-right">3.2</td><td class=" dt-right">1.3</td><td class=" dt-right">0.2</td><td class=" dt-center">setosa</td></tr><tr role="row" class="even"><td>4</td><td class=" dt-right">4.6</td><td class=" dt-right">3.1</td><td class=" dt-right">1.5</td><td class=" dt-right">0.2</td><td class=" dt-center">setosa</td></tr><tr role="row" class="odd"><td>5</td><td class=" dt-right">5</td><td class=" dt-right">3.6</td><td class=" dt-right">1.4</td><td class=" dt-right">0.2</td><td class=" dt-center">setosa</td></tr></tbody></table><div class="dataTables_info" id="DataTables_Table_0_info" role="status" aria-live="polite">Showing 1 to 5 of 20 entries</div><div class="dataTables_paginate paging_simple_numbers" id="DataTables_Table_0_paginate"><a class="paginate_button previous disabled" aria-controls="DataTables_Table_0" data-dt-idx="0" tabindex="-1" id="DataTables_Table_0_previous">Previous</a><span><a class="paginate_button current" aria-controls="DataTables_Table_0" data-dt-idx="1" tabindex="0">1</a><a class="paginate_button " aria-controls="DataTables_Table_0" data-dt-idx="2" tabindex="0">2</a><a class="paginate_button " aria-controls="DataTables_Table_0" data-dt-idx="3" tabindex="0">3</a><a class="paginate_button " aria-controls="DataTables_Table_0" data-dt-idx="4" tabindex="0">4</a></span><a class="paginate_button next" aria-controls="DataTables_Table_0" data-dt-idx="5" tabindex="0" id="DataTables_Table_0_next">Next</a></div></div></div>
+<script type="application/json" data-for="htmlwidget-1">{
+  "x": {
+    "filter": "none",
+    "data": [
+      ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20"],
+      [5.1, 4.9, 4.7, 4.6, 5, 5.4, 4.6, 5, 4.4, 4.9, 5.4, 4.8, 4.8, 4.3, 5.8, 5.7, 5.4, 5.1, 5.7, 5.1],
+      [3.5, 3, 3.2, 3.1, 3.6, 3.9, 3.4, 3.4, 2.9, 3.1, 3.7, 3.4, 3, 3, 4, 4.4, 3.9, 3.5, 3.8, 3.8],
+      [1.4, 1.4, 1.3, 1.5, 1.4, 1.7, 1.4, 1.5, 1.4, 1.5, 1.5, 1.6, 1.4, 1.1, 1.2, 1.5, 1.3, 1.4, 1.7, 1.5],
+      [0.2, 0.2, 0.2, 0.2, 0.2, 0.4, 0.3, 0.2, 0.2, 0.1, 0.2, 0.2, 0.1, 0.1, 0.2, 0.4, 0.4, 0.3, 0.3, 0.3],
+      ["setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa"]
+    ],
+    "container": "<table class=\"display\">\n  <thead>\n    <tr>\n      <th> </th>\n      <th>Sepal.Length</th>\n      <th>Sepal.Width</th>\n      <th>Petal.Length</th>\n      <th>Petal.Width</th>\n      <th>Species</th>\n    </tr>\n  </thead>\n</table>",
+    "options": {
+      "columnDefs": [
+        {
+          "className": "dt-center",
+          "targets": 5
+        },
+        {
+          "className": "dt-right",
+          "targets": [1, 2, 3, 4]
+        },
+        {
+          "orderable": false,
+          "targets": 0
+        }
+      ],
+      "pageLength": 5,
+      "lengthMenu": [5, 10, 15, 20],
+      "order": [],
+      "autoWidth": false,
+      "orderClasses": false
+    }
+  },
+  "evals": [],
+  "jsHooks": []
+}</script>
+<p>The target column index is 5 but we actually centered the 6th column: the first column is row names, and the rest of columns are the <code>iris</code> data. The JavaScript index of the 6th column is 5. See the section “<a href="https://rstudio.github.io/DT/#display-row-names">Display Row Names</a>” for more details.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="https://rstudio.github.io/DT/options.html#cb3-1"></a><span class="co"># when rownames = FALSE, use 4 as the index of the Species column</span></span>
+<span id="cb3-2"><a href="https://rstudio.github.io/DT/options.html#cb3-2"></a><span class="kw">datatable</span>(<span class="kw">head</span>(iris, <span class="dv">20</span>), <span class="dt">rownames =</span> <span class="ot">FALSE</span>, <span class="dt">options =</span> <span class="kw">list</span>(</span>
+<span id="cb3-3"><a href="https://rstudio.github.io/DT/options.html#cb3-3"></a>  <span class="dt">columnDefs =</span> <span class="kw">list</span>(<span class="kw">list</span>(<span class="dt">className =</span> <span class="st">'dt-center'</span>, <span class="dt">targets =</span> <span class="dv">4</span>)),</span>
+<span id="cb3-4"><a href="https://rstudio.github.io/DT/options.html#cb3-4"></a>  <span class="dt">pageLength =</span> <span class="dv">5</span>,</span>
+<span id="cb3-5"><a href="https://rstudio.github.io/DT/options.html#cb3-5"></a>  <span class="dt">lengthMenu =</span> <span class="kw">c</span>(<span class="dv">5</span>, <span class="dv">10</span>, <span class="dv">15</span>, <span class="dv">20</span>)</span>
+<span id="cb3-6"><a href="https://rstudio.github.io/DT/options.html#cb3-6"></a>))</span></code></pre>
+</div>
+<div id="global-options" class="section level1">
+<h1><span class="header-section-number">3</span> Global Options</h1>
+<p>When there are some options that you want to set for multiple tables produced from the same R session, you can use the global option named <code>DT.options</code>. For example:</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="https://rstudio.github.io/DT/options.html#cb4-1"></a><span class="kw">options</span>(<span class="dt">DT.options =</span> <span class="kw">list</span>(<span class="dt">pageLength =</span> <span class="dv">5</span>, <span class="dt">language =</span> <span class="kw">list</span>(<span class="dt">search =</span> <span class="st">'Filter:'</span>)))</span></code></pre>
+</div>
+<div id="examples-of-datatables-options" class="section level1">
+<h1><span class="header-section-number">4</span> Examples of DataTables Options</h1>
+<div id="sorting" class="section level2">
+<h2><span class="header-section-number">4.1</span> Sorting</h2>
+<p>We can use the <code>order</code> option to specify how we want to order the rows. For example, we sort the table by columns 2 (ascending) and 4 (descending):</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="https://rstudio.github.io/DT/options.html#cb5-1"></a><span class="kw">datatable</span>(<span class="kw">head</span>(mtcars, <span class="dv">30</span>), <span class="dt">options =</span> <span class="kw">list</span>(</span>
+<span id="cb5-2"><a href="https://rstudio.github.io/DT/options.html#cb5-2"></a>  <span class="dt">order =</span> <span class="kw">list</span>(<span class="kw">list</span>(<span class="dv">2</span>, <span class="st">'asc'</span>), <span class="kw">list</span>(<span class="dv">4</span>, <span class="st">'desc'</span>))</span>
+<span id="cb5-3"><a href="https://rstudio.github.io/DT/options.html#cb5-3"></a>))</span></code></pre>
+<div id="htmlwidget-2" style="width:100%;height:auto;" class="datatables html-widget html-widget-static-bound"><div id="DataTables_Table_1_wrapper" class="dataTables_wrapper no-footer"><div class="dataTables_length" id="DataTables_Table_1_length"><label>Show <select name="DataTables_Table_1_length" aria-controls="DataTables_Table_1" class=""><option value="10">10</option><option value="25">25</option><option value="50">50</option><option value="100">100</option></select> entries</label></div><div id="DataTables_Table_1_filter" class="dataTables_filter"><label>Search:<input type="search" class="" placeholder="" aria-controls="DataTables_Table_1"></label></div><table class="display dataTable no-footer" id="DataTables_Table_1" role="grid" aria-describedby="DataTables_Table_1_info">
+  <thead>
+    <tr role="row"><th class="sorting_disabled" rowspan="1" colspan="1" aria-label=" "> </th><th class="dt-right sorting" tabindex="0" aria-controls="DataTables_Table_1" rowspan="1" colspan="1" aria-label="mpg: activate to sort column ascending">mpg</th><th class="dt-right sorting_asc" tabindex="0" aria-controls="DataTables_Table_1" rowspan="1" colspan="1" aria-sort="ascending" aria-label="cyl: activate to sort column descending">cyl</th><th class="dt-right sorting" tabindex="0" aria-controls="DataTables_Table_1" rowspan="1" colspan="1" aria-label="disp: activate to sort column ascending">disp</th><th class="dt-right sorting_desc" tabindex="0" aria-controls="DataTables_Table_1" rowspan="1" colspan="1" aria-label="hp: activate to sort column ascending">hp</th><th class="dt-right sorting" tabindex="0" aria-controls="DataTables_Table_1" rowspan="1" colspan="1" aria-label="drat: activate to sort column ascending">drat</th><th class="dt-right sorting" tabindex="0" aria-controls="DataTables_Table_1" rowspan="1" colspan="1" aria-label="wt: activate to sort column ascending">wt</th><th class="dt-right sorting" tabindex="0" aria-controls="DataTables_Table_1" rowspan="1" colspan="1" aria-label="qsec: activate to sort column ascending">qsec</th><th class="dt-right sorting" tabindex="0" aria-controls="DataTables_Table_1" rowspan="1" colspan="1" aria-label="vs: activate to sort column ascending">vs</th><th class="dt-right sorting" tabindex="0" aria-controls="DataTables_Table_1" rowspan="1" colspan="1" aria-label="am: activate to sort column ascending">am</th><th class="dt-right sorting" tabindex="0" aria-controls="DataTables_Table_1" rowspan="1" colspan="1" aria-label="gear: activate to sort column ascending">gear</th><th class="dt-right sorting" tabindex="0" aria-controls="DataTables_Table_1" rowspan="1" colspan="1" aria-label="carb: activate to sort column ascending">carb</th></tr>
+  </thead>
+<tbody><tr role="row" class="odd"><td>Lotus Europa</td><td class=" dt-right">30.4</td><td class=" dt-right">4</td><td class=" dt-right">95.1</td><td class=" dt-right">113</td><td class=" dt-right">3.77</td><td class=" dt-right">1.513</td><td class=" dt-right">16.9</td><td class=" dt-right">1</td><td class=" dt-right">1</td><td class=" dt-right">5</td><td class=" dt-right">2</td></tr><tr role="row" class="even"><td>Toyota Corona</td><td class=" dt-right">21.5</td><td class=" dt-right">4</td><td class=" dt-right">120.1</td><td class=" dt-right">97</td><td class=" dt-right">3.7</td><td class=" dt-right">2.465</td><td class=" dt-right">20.01</td><td class=" dt-right">1</td><td class=" dt-right">0</td><td class=" dt-right">3</td><td class=" dt-right">1</td></tr><tr role="row" class="odd"><td>Merc 230</td><td class=" dt-right">22.8</td><td class=" dt-right">4</td><td class=" dt-right">140.8</td><td class=" dt-right">95</td><td class=" dt-right">3.92</td><td class=" dt-right">3.15</td><td class=" dt-right">22.9</td><td class=" dt-right">1</td><td class=" dt-right">0</td><td class=" dt-right">4</td><td class=" dt-right">2</td></tr><tr role="row" class="even"><td>Datsun 710</td><td class=" dt-right">22.8</td><td class=" dt-right">4</td><td class=" dt-right">108</td><td class=" dt-right">93</td><td class=" dt-right">3.85</td><td class=" dt-right">2.32</td><td class=" dt-right">18.61</td><td class=" dt-right">1</td><td class=" dt-right">1</td><td class=" dt-right">4</td><td class=" dt-right">1</td></tr><tr role="row" class="odd"><td>Porsche 914-2</td><td class=" dt-right">26</td><td class=" dt-right">4</td><td class=" dt-right">120.3</td><td class=" dt-right">91</td><td class=" dt-right">4.43</td><td class=" dt-right">2.14</td><td class=" dt-right">16.7</td><td class=" dt-right">0</td><td class=" dt-right">1</td><td class=" dt-right">5</td><td class=" dt-right">2</td></tr><tr role="row" class="even"><td>Fiat 128</td><td class=" dt-right">32.4</td><td class=" dt-right">4</td><td class=" dt-right">78.7</td><td class=" dt-right">66</td><td class=" dt-right">4.08</td><td class=" dt-right">2.2</td><td class=" dt-right">19.47</td><td class=" dt-right">1</td><td class=" dt-right">1</td><td class=" dt-right">4</td><td class=" dt-right">1</td></tr><tr role="row" class="odd"><td>Fiat X1-9</td><td class=" dt-right">27.3</td><td class=" dt-right">4</td><td class=" dt-right">79</td><td class=" dt-right">66</td><td class=" dt-right">4.08</td><td class=" dt-right">1.935</td><td class=" dt-right">18.9</td><td class=" dt-right">1</td><td class=" dt-right">1</td><td class=" dt-right">4</td><td class=" dt-right">1</td></tr><tr role="row" class="even"><td>Toyota Corolla</td><td class=" dt-right">33.9</td><td class=" dt-right">4</td><td class=" dt-right">71.1</td><td class=" dt-right">65</td><td class=" dt-right">4.22</td><td class=" dt-right">1.835</td><td class=" dt-right">19.9</td><td class=" dt-right">1</td><td class=" dt-right">1</td><td class=" dt-right">4</td><td class=" dt-right">1</td></tr><tr role="row" class="odd"><td>Merc 240D</td><td class=" dt-right">24.4</td><td class=" dt-right">4</td><td class=" dt-right">146.7</td><td class=" dt-right">62</td><td class=" dt-right">3.69</td><td class=" dt-right">3.19</td><td class=" dt-right">20</td><td class=" dt-right">1</td><td class=" dt-right">0</td><td class=" dt-right">4</td><td class=" dt-right">2</td></tr><tr role="row" class="even"><td>Honda Civic</td><td class=" dt-right">30.4</td><td class=" dt-right">4</td><td class=" dt-right">75.7</td><td class=" dt-right">52</td><td class=" dt-right">4.93</td><td class=" dt-right">1.615</td><td class=" dt-right">18.52</td><td class=" dt-right">1</td><td class=" dt-right">1</td><td class=" dt-right">4</td><td class=" dt-right">2</td></tr></tbody></table><div class="dataTables_info" id="DataTables_Table_1_info" role="status" aria-live="polite">Showing 1 to 10 of 30 entries</div><div class="dataTables_paginate paging_simple_numbers" id="DataTables_Table_1_paginate"><a class="paginate_button previous disabled" aria-controls="DataTables_Table_1" data-dt-idx="0" tabindex="-1" id="DataTables_Table_1_previous">Previous</a><span><a class="paginate_button current" aria-controls="DataTables_Table_1" data-dt-idx="1" tabindex="0">1</a><a class="paginate_button " aria-controls="DataTables_Table_1" data-dt-idx="2" tabindex="0">2</a><a class="paginate_button " aria-controls="DataTables_Table_1" data-dt-idx="3" tabindex="0">3</a></span><a class="paginate_button next" aria-controls="DataTables_Table_1" data-dt-idx="4" tabindex="0" id="DataTables_Table_1_next">Next</a></div></div></div>
+<script type="application/json" data-for="htmlwidget-2">{
+  "x": {
+    "filter": "none",
+    "data": [
+      ["Mazda RX4", "Mazda RX4 Wag", "Datsun 710", "Hornet 4 Drive", "Hornet Sportabout", "Valiant", "Duster 360", "Merc 240D", "Merc 230", "Merc 280", "Merc 280C", "Merc 450SE", "Merc 450SL", "Merc 450SLC", "Cadillac Fleetwood", "Lincoln Continental", "Chrysler Imperial", "Fiat 128", "Honda Civic", "Toyota Corolla", "Toyota Corona", "Dodge Challenger", "AMC Javelin", "Camaro Z28", "Pontiac Firebird", "Fiat X1-9", "Porsche 914-2", "Lotus Europa", "Ford Pantera L", "Ferrari Dino"],
+      [21, 21, 22.8, 21.4, 18.7, 18.1, 14.3, 24.4, 22.8, 19.2, 17.8, 16.4, 17.3, 15.2, 10.4, 10.4, 14.7, 32.4, 30.4, 33.9, 21.5, 15.5, 15.2, 13.3, 19.2, 27.3, 26, 30.4, 15.8, 19.7],
+      [6, 6, 4, 6, 8, 6, 8, 4, 4, 6, 6, 8, 8, 8, 8, 8, 8, 4, 4, 4, 4, 8, 8, 8, 8, 4, 4, 4, 8, 6],
+      [160, 160, 108, 258, 360, 225, 360, 146.7, 140.8, 167.6, 167.6, 275.8, 275.8, 275.8, 472, 460, 440, 78.7, 75.7, 71.1, 120.1, 318, 304, 350, 400, 79, 120.3, 95.1, 351, 145],
+      [110, 110, 93, 110, 175, 105, 245, 62, 95, 123, 123, 180, 180, 180, 205, 215, 230, 66, 52, 65, 97, 150, 150, 245, 175, 66, 91, 113, 264, 175],
+      [3.9, 3.9, 3.85, 3.08, 3.15, 2.76, 3.21, 3.69, 3.92, 3.92, 3.92, 3.07, 3.07, 3.07, 2.93, 3, 3.23, 4.08, 4.93, 4.22, 3.7, 2.76, 3.15, 3.73, 3.08, 4.08, 4.43, 3.77, 4.22, 3.62],
+      [2.62, 2.875, 2.32, 3.215, 3.44, 3.46, 3.57, 3.19, 3.15, 3.44, 3.44, 4.07, 3.73, 3.78, 5.25, 5.424, 5.345, 2.2, 1.615, 1.835, 2.465, 3.52, 3.435, 3.84, 3.845, 1.935, 2.14, 1.513, 3.17, 2.77],
+      [16.46, 17.02, 18.61, 19.44, 17.02, 20.22, 15.84, 20, 22.9, 18.3, 18.9, 17.4, 17.6, 18, 17.98, 17.82, 17.42, 19.47, 18.52, 19.9, 20.01, 16.87, 17.3, 15.41, 17.05, 18.9, 16.7, 16.9, 14.5, 15.5],
+      [0, 0, 1, 1, 0, 1, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0],
+      [1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1],
+      [4, 4, 4, 3, 3, 3, 3, 4, 4, 4, 4, 3, 3, 3, 3, 3, 3, 4, 4, 4, 3, 3, 3, 3, 3, 4, 5, 5, 5, 5],
+      [4, 4, 1, 1, 2, 1, 4, 2, 2, 4, 4, 3, 3, 3, 4, 4, 4, 1, 2, 1, 1, 2, 2, 4, 2, 1, 2, 2, 4, 6]
+    ],
+    "container": "<table class=\"display\">\n  <thead>\n    <tr>\n      <th> </th>\n      <th>mpg</th>\n      <th>cyl</th>\n      <th>disp</th>\n      <th>hp</th>\n      <th>drat</th>\n      <th>wt</th>\n      <th>qsec</th>\n      <th>vs</th>\n      <th>am</th>\n      <th>gear</th>\n      <th>carb</th>\n    </tr>\n  </thead>\n</table>",
+    "options": {
+      "order": [
+        [
+          2,
+          "asc"
+        ],
+        [
+          4,
+          "desc"
+        ]
+      ],
+      "columnDefs": [
+        {
+          "className": "dt-right",
+          "targets": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+        },
+        {
+          "orderable": false,
+          "targets": 0
+        }
+      ],
+      "autoWidth": false,
+      "orderClasses": false
+    }
+  },
+  "evals": [],
+  "jsHooks": []
+}</script>
+</div>
+<div id="dom-elements" class="section level2">
+<h2><span class="header-section-number">4.2</span> DOM Elements</h2>
+<p>By default, the table has these DOM elements: the length menu, the search box, the table, the information summary, and the pagination control. You can choose to display a subset of these elements using the <a href="http://datatables.net/reference/option/dom"><code>dom</code></a> option. Here are some examples:</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="https://rstudio.github.io/DT/options.html#cb6-1"></a><span class="co"># only display the table, and nothing else</span></span>
+<span id="cb6-2"><a href="https://rstudio.github.io/DT/options.html#cb6-2"></a><span class="kw">datatable</span>(<span class="kw">head</span>(iris), <span class="dt">options =</span> <span class="kw">list</span>(<span class="dt">dom =</span> <span class="st">'t'</span>))</span></code></pre>
+<div id="htmlwidget-3" style="width:100%;height:auto;" class="datatables html-widget html-widget-static-bound"><div id="DataTables_Table_2_wrapper" class="dataTables_wrapper no-footer"><table class="display dataTable no-footer" id="DataTables_Table_2" role="grid">
+  <thead>
+    <tr role="row"><th class="sorting_disabled" rowspan="1" colspan="1" aria-label=" "> </th><th class="dt-right sorting" tabindex="0" aria-controls="DataTables_Table_2" rowspan="1" colspan="1" aria-label="Sepal.Length: activate to sort column ascending">Sepal.Length</th><th class="dt-right sorting" tabindex="0" aria-controls="DataTables_Table_2" rowspan="1" colspan="1" aria-label="Sepal.Width: activate to sort column ascending">Sepal.Width</th><th class="dt-right sorting" tabindex="0" aria-controls="DataTables_Table_2" rowspan="1" colspan="1" aria-label="Petal.Length: activate to sort column ascending">Petal.Length</th><th class="dt-right sorting" tabindex="0" aria-controls="DataTables_Table_2" rowspan="1" colspan="1" aria-label="Petal.Width: activate to sort column ascending">Petal.Width</th><th class="sorting" tabindex="0" aria-controls="DataTables_Table_2" rowspan="1" colspan="1" aria-label="Species: activate to sort column ascending">Species</th></tr>
+  </thead>
+<tbody><tr role="row" class="odd"><td>1</td><td class=" dt-right">5.1</td><td class=" dt-right">3.5</td><td class=" dt-right">1.4</td><td class=" dt-right">0.2</td><td>setosa</td></tr><tr role="row" class="even"><td>2</td><td class=" dt-right">4.9</td><td class=" dt-right">3</td><td class=" dt-right">1.4</td><td class=" dt-right">0.2</td><td>setosa</td></tr><tr role="row" class="odd"><td>3</td><td class=" dt-right">4.7</td><td class=" dt-right">3.2</td><td class=" dt-right">1.3</td><td class=" dt-right">0.2</td><td>setosa</td></tr><tr role="row" class="even"><td>4</td><td class=" dt-right">4.6</td><td class=" dt-right">3.1</td><td class=" dt-right">1.5</td><td class=" dt-right">0.2</td><td>setosa</td></tr><tr role="row" class="odd"><td>5</td><td class=" dt-right">5</td><td class=" dt-right">3.6</td><td class=" dt-right">1.4</td><td class=" dt-right">0.2</td><td>setosa</td></tr><tr role="row" class="even"><td>6</td><td class=" dt-right">5.4</td><td class=" dt-right">3.9</td><td class=" dt-right">1.7</td><td class=" dt-right">0.4</td><td>setosa</td></tr></tbody></table></div></div>
+<script type="application/json" data-for="htmlwidget-3">{
+  "x": {
+    "filter": "none",
+    "data": [
+      ["1", "2", "3", "4", "5", "6"],
+      [5.1, 4.9, 4.7, 4.6, 5, 5.4],
+      [3.5, 3, 3.2, 3.1, 3.6, 3.9],
+      [1.4, 1.4, 1.3, 1.5, 1.4, 1.7],
+      [0.2, 0.2, 0.2, 0.2, 0.2, 0.4],
+      ["setosa", "setosa", "setosa", "setosa", "setosa", "setosa"]
+    ],
+    "container": "<table class=\"display\">\n  <thead>\n    <tr>\n      <th> </th>\n      <th>Sepal.Length</th>\n      <th>Sepal.Width</th>\n      <th>Petal.Length</th>\n      <th>Petal.Width</th>\n      <th>Species</th>\n    </tr>\n  </thead>\n</table>",
+    "options": {
+      "dom": "t",
+      "columnDefs": [
+        {
+          "className": "dt-right",
+          "targets": [1, 2, 3, 4]
+        },
+        {
+          "orderable": false,
+          "targets": 0
+        }
+      ],
+      "order": [],
+      "autoWidth": false,
+      "orderClasses": false
+    }
+  },
+  "evals": [],
+  "jsHooks": []
+}</script>
+<pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="https://rstudio.github.io/DT/options.html#cb7-1"></a><span class="co"># the filtering box and the table</span></span>
+<span id="cb7-2"><a href="https://rstudio.github.io/DT/options.html#cb7-2"></a><span class="kw">datatable</span>(<span class="kw">head</span>(iris), <span class="dt">options =</span> <span class="kw">list</span>(<span class="dt">dom =</span> <span class="st">'ft'</span>))</span></code></pre>
+<div id="htmlwidget-4" style="width:100%;height:auto;" class="datatables html-widget html-widget-static-bound"><div id="DataTables_Table_3_wrapper" class="dataTables_wrapper no-footer"><div id="DataTables_Table_3_filter" class="dataTables_filter"><label>Search:<input type="search" class="" placeholder="" aria-controls="DataTables_Table_3"></label></div><table class="display dataTable no-footer" id="DataTables_Table_3" role="grid">
+  <thead>
+    <tr role="row"><th class="sorting_disabled" rowspan="1" colspan="1" aria-label=" "> </th><th class="dt-right sorting" tabindex="0" aria-controls="DataTables_Table_3" rowspan="1" colspan="1" aria-label="Sepal.Length: activate to sort column ascending">Sepal.Length</th><th class="dt-right sorting" tabindex="0" aria-controls="DataTables_Table_3" rowspan="1" colspan="1" aria-label="Sepal.Width: activate to sort column ascending">Sepal.Width</th><th class="dt-right sorting" tabindex="0" aria-controls="DataTables_Table_3" rowspan="1" colspan="1" aria-label="Petal.Length: activate to sort column ascending">Petal.Length</th><th class="dt-right sorting" tabindex="0" aria-controls="DataTables_Table_3" rowspan="1" colspan="1" aria-label="Petal.Width: activate to sort column ascending">Petal.Width</th><th class="sorting" tabindex="0" aria-controls="DataTables_Table_3" rowspan="1" colspan="1" aria-label="Species: activate to sort column ascending">Species</th></tr>
+  </thead>
+<tbody><tr role="row" class="odd"><td>1</td><td class=" dt-right">5.1</td><td class=" dt-right">3.5</td><td class=" dt-right">1.4</td><td class=" dt-right">0.2</td><td>setosa</td></tr><tr role="row" class="even"><td>2</td><td class=" dt-right">4.9</td><td class=" dt-right">3</td><td class=" dt-right">1.4</td><td class=" dt-right">0.2</td><td>setosa</td></tr><tr role="row" class="odd"><td>3</td><td class=" dt-right">4.7</td><td class=" dt-right">3.2</td><td class=" dt-right">1.3</td><td class=" dt-right">0.2</td><td>setosa</td></tr><tr role="row" class="even"><td>4</td><td class=" dt-right">4.6</td><td class=" dt-right">3.1</td><td class=" dt-right">1.5</td><td class=" dt-right">0.2</td><td>setosa</td></tr><tr role="row" class="odd"><td>5</td><td class=" dt-right">5</td><td class=" dt-right">3.6</td><td class=" dt-right">1.4</td><td class=" dt-right">0.2</td><td>setosa</td></tr><tr role="row" class="even"><td>6</td><td class=" dt-right">5.4</td><td class=" dt-right">3.9</td><td class=" dt-right">1.7</td><td class=" dt-right">0.4</td><td>setosa</td></tr></tbody></table></div></div>
+<script type="application/json" data-for="htmlwidget-4">{
+  "x": {
+    "filter": "none",
+    "data": [
+      ["1", "2", "3", "4", "5", "6"],
+      [5.1, 4.9, 4.7, 4.6, 5, 5.4],
+      [3.5, 3, 3.2, 3.1, 3.6, 3.9],
+      [1.4, 1.4, 1.3, 1.5, 1.4, 1.7],
+      [0.2, 0.2, 0.2, 0.2, 0.2, 0.4],
+      ["setosa", "setosa", "setosa", "setosa", "setosa", "setosa"]
+    ],
+    "container": "<table class=\"display\">\n  <thead>\n    <tr>\n      <th> </th>\n      <th>Sepal.Length</th>\n      <th>Sepal.Width</th>\n      <th>Petal.Length</th>\n      <th>Petal.Width</th>\n      <th>Species</th>\n    </tr>\n  </thead>\n</table>",
+    "options": {
+      "dom": "ft",
+      "columnDefs": [
+        {
+          "className": "dt-right",
+          "targets": [1, 2, 3, 4]
+        },
+        {
+          "orderable": false,
+          "targets": 0
+        }
+      ],
+      "order": [],
+      "autoWidth": false,
+      "orderClasses": false
+    }
+  },
+  "evals": [],
+  "jsHooks": []
+}</script>
+</div>
+<div id="callbacks-in-options" class="section level2">
+<h2><span class="header-section-number">4.3</span> Callbacks in Options</h2>
+<p>We can also customize the callbacks in <strong>DataTables</strong> options. For example, we use the <code>initComplete</code> callback function in <code>options</code> to change the background color of the table header to black after the initialization:</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="https://rstudio.github.io/DT/options.html#cb8-1"></a><span class="kw">datatable</span>(<span class="kw">head</span>(iris, <span class="dv">20</span>), <span class="dt">options =</span> <span class="kw">list</span>(</span>
+<span id="cb8-2"><a href="https://rstudio.github.io/DT/options.html#cb8-2"></a>  <span class="dt">initComplete =</span> <span class="kw">JS</span>(</span>
+<span id="cb8-3"><a href="https://rstudio.github.io/DT/options.html#cb8-3"></a>    <span class="st">"function(settings, json) {"</span>,</span>
+<span id="cb8-4"><a href="https://rstudio.github.io/DT/options.html#cb8-4"></a>    <span class="st">"$(this.api().table().header()).css({'background-color': '#000', 'color': '#fff'});"</span>,</span>
+<span id="cb8-5"><a href="https://rstudio.github.io/DT/options.html#cb8-5"></a>    <span class="st">"}"</span>)</span>
+<span id="cb8-6"><a href="https://rstudio.github.io/DT/options.html#cb8-6"></a>))</span></code></pre>
+<div id="htmlwidget-5" style="width:100%;height:auto;" class="datatables html-widget html-widget-static-bound"><div id="DataTables_Table_4_wrapper" class="dataTables_wrapper no-footer"><div class="dataTables_length" id="DataTables_Table_4_length"><label>Show <select name="DataTables_Table_4_length" aria-controls="DataTables_Table_4" class=""><option value="10">10</option><option value="25">25</option><option value="50">50</option><option value="100">100</option></select> entries</label></div><div id="DataTables_Table_4_filter" class="dataTables_filter"><label>Search:<input type="search" class="" placeholder="" aria-controls="DataTables_Table_4"></label></div><table class="display dataTable no-footer" id="DataTables_Table_4" role="grid" aria-describedby="DataTables_Table_4_info">
+  <thead style="background-color: rgb(0, 0, 0); color: rgb(255, 255, 255);">
+    <tr role="row"><th class="sorting_disabled" rowspan="1" colspan="1" aria-label=" "> </th><th class="dt-right sorting" tabindex="0" aria-controls="DataTables_Table_4" rowspan="1" colspan="1" aria-label="Sepal.Length: activate to sort column ascending">Sepal.Length</th><th class="dt-right sorting" tabindex="0" aria-controls="DataTables_Table_4" rowspan="1" colspan="1" aria-label="Sepal.Width: activate to sort column ascending">Sepal.Width</th><th class="dt-right sorting" tabindex="0" aria-controls="DataTables_Table_4" rowspan="1" colspan="1" aria-label="Petal.Length: activate to sort column ascending">Petal.Length</th><th class="dt-right sorting" tabindex="0" aria-controls="DataTables_Table_4" rowspan="1" colspan="1" aria-label="Petal.Width: activate to sort column ascending">Petal.Width</th><th class="sorting" tabindex="0" aria-controls="DataTables_Table_4" rowspan="1" colspan="1" aria-label="Species: activate to sort column ascending">Species</th></tr>
+  </thead>
+<tbody><tr role="row" class="odd"><td>1</td><td class=" dt-right">5.1</td><td class=" dt-right">3.5</td><td class=" dt-right">1.4</td><td class=" dt-right">0.2</td><td>setosa</td></tr><tr role="row" class="even"><td>2</td><td class=" dt-right">4.9</td><td class=" dt-right">3</td><td class=" dt-right">1.4</td><td class=" dt-right">0.2</td><td>setosa</td></tr><tr role="row" class="odd"><td>3</td><td class=" dt-right">4.7</td><td class=" dt-right">3.2</td><td class=" dt-right">1.3</td><td class=" dt-right">0.2</td><td>setosa</td></tr><tr role="row" class="even"><td>4</td><td class=" dt-right">4.6</td><td class=" dt-right">3.1</td><td class=" dt-right">1.5</td><td class=" dt-right">0.2</td><td>setosa</td></tr><tr role="row" class="odd"><td>5</td><td class=" dt-right">5</td><td class=" dt-right">3.6</td><td class=" dt-right">1.4</td><td class=" dt-right">0.2</td><td>setosa</td></tr><tr role="row" class="even"><td>6</td><td class=" dt-right">5.4</td><td class=" dt-right">3.9</td><td class=" dt-right">1.7</td><td class=" dt-right">0.4</td><td>setosa</td></tr><tr role="row" class="odd"><td>7</td><td class=" dt-right">4.6</td><td class=" dt-right">3.4</td><td class=" dt-right">1.4</td><td class=" dt-right">0.3</td><td>setosa</td></tr><tr role="row" class="even"><td>8</td><td class=" dt-right">5</td><td class=" dt-right">3.4</td><td class=" dt-right">1.5</td><td class=" dt-right">0.2</td><td>setosa</td></tr><tr role="row" class="odd"><td>9</td><td class=" dt-right">4.4</td><td class=" dt-right">2.9</td><td class=" dt-right">1.4</td><td class=" dt-right">0.2</td><td>setosa</td></tr><tr role="row" class="even"><td>10</td><td class=" dt-right">4.9</td><td class=" dt-right">3.1</td><td class=" dt-right">1.5</td><td class=" dt-right">0.1</td><td>setosa</td></tr></tbody></table><div class="dataTables_info" id="DataTables_Table_4_info" role="status" aria-live="polite">Showing 1 to 10 of 20 entries</div><div class="dataTables_paginate paging_simple_numbers" id="DataTables_Table_4_paginate"><a class="paginate_button previous disabled" aria-controls="DataTables_Table_4" data-dt-idx="0" tabindex="-1" id="DataTables_Table_4_previous">Previous</a><span><a class="paginate_button current" aria-controls="DataTables_Table_4" data-dt-idx="1" tabindex="0">1</a><a class="paginate_button " aria-controls="DataTables_Table_4" data-dt-idx="2" tabindex="0">2</a></span><a class="paginate_button next" aria-controls="DataTables_Table_4" data-dt-idx="3" tabindex="0" id="DataTables_Table_4_next">Next</a></div></div></div>
+<script type="application/json" data-for="htmlwidget-5">{
+  "x": {
+    "filter": "none",
+    "data": [
+      ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20"],
+      [5.1, 4.9, 4.7, 4.6, 5, 5.4, 4.6, 5, 4.4, 4.9, 5.4, 4.8, 4.8, 4.3, 5.8, 5.7, 5.4, 5.1, 5.7, 5.1],
+      [3.5, 3, 3.2, 3.1, 3.6, 3.9, 3.4, 3.4, 2.9, 3.1, 3.7, 3.4, 3, 3, 4, 4.4, 3.9, 3.5, 3.8, 3.8],
+      [1.4, 1.4, 1.3, 1.5, 1.4, 1.7, 1.4, 1.5, 1.4, 1.5, 1.5, 1.6, 1.4, 1.1, 1.2, 1.5, 1.3, 1.4, 1.7, 1.5],
+      [0.2, 0.2, 0.2, 0.2, 0.2, 0.4, 0.3, 0.2, 0.2, 0.1, 0.2, 0.2, 0.1, 0.1, 0.2, 0.4, 0.4, 0.3, 0.3, 0.3],
+      ["setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa"]
+    ],
+    "container": "<table class=\"display\">\n  <thead>\n    <tr>\n      <th> </th>\n      <th>Sepal.Length</th>\n      <th>Sepal.Width</th>\n      <th>Petal.Length</th>\n      <th>Petal.Width</th>\n      <th>Species</th>\n    </tr>\n  </thead>\n</table>",
+    "options": {
+      "initComplete": "function(settings, json) {\n$(this.api().table().header()).css({'background-color': '#000', 'color': '#fff'});\n}",
+      "columnDefs": [
+        {
+          "className": "dt-right",
+          "targets": [1, 2, 3, 4]
+        },
+        {
+          "orderable": false,
+          "targets": 0
+        }
+      ],
+      "order": [],
+      "autoWidth": false,
+      "orderClasses": false
+    }
+  },
+  "evals": ["options.initComplete"],
+  "jsHooks": []
+}</script>
+<p>The function <code>JS()</code> tells R that this element is not an ordinary character vector, but literal JavaScript code, which will be evaluated in the web browser. We need this special function because there is no way to encode a JavaScript function in R (using <strong>jsonlite</strong>) and decode it in the browser.</p>
+</div>
+<div id="column-rendering" class="section level2">
+<h2><span class="header-section-number">4.4</span> Column Rendering</h2>
+<p>We can define a custom rendering function for particular columns in the option <code>columnDefs</code>. For example, we abbreviate character strings that are wider than 6 characters using the first 6 characters plus an ellipsis (…), and the full character string will be displayed as a tooltip when you mouse over the cell<a href="https://rstudio.github.io/DT/options.html#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>:</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="https://rstudio.github.io/DT/options.html#cb9-1"></a><span class="kw">datatable</span>(iris[<span class="kw">c</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">20</span>, <span class="dv">51</span><span class="op">:</span><span class="dv">60</span>, <span class="dv">101</span><span class="op">:</span><span class="dv">120</span>), ], <span class="dt">options =</span> <span class="kw">list</span>(<span class="dt">columnDefs =</span> <span class="kw">list</span>(<span class="kw">list</span>(</span>
+<span id="cb9-2"><a href="https://rstudio.github.io/DT/options.html#cb9-2"></a>  <span class="dt">targets =</span> <span class="dv">5</span>,</span>
+<span id="cb9-3"><a href="https://rstudio.github.io/DT/options.html#cb9-3"></a>  <span class="dt">render =</span> <span class="kw">JS</span>(</span>
+<span id="cb9-4"><a href="https://rstudio.github.io/DT/options.html#cb9-4"></a>    <span class="st">"function(data, type, row, meta) {"</span>,</span>
+<span id="cb9-5"><a href="https://rstudio.github.io/DT/options.html#cb9-5"></a>    <span class="st">"return type === 'display' &amp;&amp; data.length &gt; 6 ?"</span>,</span>
+<span id="cb9-6"><a href="https://rstudio.github.io/DT/options.html#cb9-6"></a>    <span class="st">"'&lt;span title=</span><span class="ch">\"</span><span class="st">' + data + '</span><span class="ch">\"</span><span class="st">&gt;' + data.substr(0, 6) + '...&lt;/span&gt;' : data;"</span>,</span>
+<span id="cb9-7"><a href="https://rstudio.github.io/DT/options.html#cb9-7"></a>    <span class="st">"}"</span>)</span>
+<span id="cb9-8"><a href="https://rstudio.github.io/DT/options.html#cb9-8"></a>))), <span class="dt">callback =</span> <span class="kw">JS</span>(<span class="st">'table.page(3).draw(false);'</span>))</span></code></pre>
+<div id="htmlwidget-6" style="width:100%;height:auto;" class="datatables html-widget html-widget-static-bound"><div id="DataTables_Table_5_wrapper" class="dataTables_wrapper no-footer"><div class="dataTables_length" id="DataTables_Table_5_length"><label>Show <select name="DataTables_Table_5_length" aria-controls="DataTables_Table_5" class=""><option value="10">10</option><option value="25">25</option><option value="50">50</option><option value="100">100</option></select> entries</label></div><div id="DataTables_Table_5_filter" class="dataTables_filter"><label>Search:<input type="search" class="" placeholder="" aria-controls="DataTables_Table_5"></label></div><table class="display dataTable no-footer" id="DataTables_Table_5" role="grid" aria-describedby="DataTables_Table_5_info">
+  <thead>
+    <tr role="row"><th class="sorting_disabled" rowspan="1" colspan="1" aria-label=" "> </th><th class="dt-right sorting" tabindex="0" aria-controls="DataTables_Table_5" rowspan="1" colspan="1" aria-label="Sepal.Length: activate to sort column ascending">Sepal.Length</th><th class="dt-right sorting" tabindex="0" aria-controls="DataTables_Table_5" rowspan="1" colspan="1" aria-label="Sepal.Width: activate to sort column ascending">Sepal.Width</th><th class="dt-right sorting" tabindex="0" aria-controls="DataTables_Table_5" rowspan="1" colspan="1" aria-label="Petal.Length: activate to sort column ascending">Petal.Length</th><th class="dt-right sorting" tabindex="0" aria-controls="DataTables_Table_5" rowspan="1" colspan="1" aria-label="Petal.Width: activate to sort column ascending">Petal.Width</th><th class="sorting" tabindex="0" aria-controls="DataTables_Table_5" rowspan="1" colspan="1" aria-label="Species: activate to sort column ascending">Species</th></tr>
+  </thead>
+<tbody><tr role="row" class="odd"><td>101</td><td class=" dt-right">6.3</td><td class=" dt-right">3.3</td><td class=" dt-right">6</td><td class=" dt-right">2.5</td><td><span title="virginica">virgin...</span></td></tr><tr role="row" class="even"><td>102</td><td class=" dt-right">5.8</td><td class=" dt-right">2.7</td><td class=" dt-right">5.1</td><td class=" dt-right">1.9</td><td><span title="virginica">virgin...</span></td></tr><tr role="row" class="odd"><td>103</td><td class=" dt-right">7.1</td><td class=" dt-right">3</td><td class=" dt-right">5.9</td><td class=" dt-right">2.1</td><td><span title="virginica">virgin...</span></td></tr><tr role="row" class="even"><td>104</td><td class=" dt-right">6.3</td><td class=" dt-right">2.9</td><td class=" dt-right">5.6</td><td class=" dt-right">1.8</td><td><span title="virginica">virgin...</span></td></tr><tr role="row" class="odd"><td>105</td><td class=" dt-right">6.5</td><td class=" dt-right">3</td><td class=" dt-right">5.8</td><td class=" dt-right">2.2</td><td><span title="virginica">virgin...</span></td></tr><tr role="row" class="even"><td>106</td><td class=" dt-right">7.6</td><td class=" dt-right">3</td><td class=" dt-right">6.6</td><td class=" dt-right">2.1</td><td><span title="virginica">virgin...</span></td></tr><tr role="row" class="odd"><td>107</td><td class=" dt-right">4.9</td><td class=" dt-right">2.5</td><td class=" dt-right">4.5</td><td class=" dt-right">1.7</td><td><span title="virginica">virgin...</span></td></tr><tr role="row" class="even"><td>108</td><td class=" dt-right">7.3</td><td class=" dt-right">2.9</td><td class=" dt-right">6.3</td><td class=" dt-right">1.8</td><td><span title="virginica">virgin...</span></td></tr><tr role="row" class="odd"><td>109</td><td class=" dt-right">6.7</td><td class=" dt-right">2.5</td><td class=" dt-right">5.8</td><td class=" dt-right">1.8</td><td><span title="virginica">virgin...</span></td></tr><tr role="row" class="even"><td>110</td><td class=" dt-right">7.2</td><td class=" dt-right">3.6</td><td class=" dt-right">6.1</td><td class=" dt-right">2.5</td><td><span title="virginica">virgin...</span></td></tr></tbody></table><div class="dataTables_info" id="DataTables_Table_5_info" role="status" aria-live="polite">Showing 31 to 40 of 50 entries</div><div class="dataTables_paginate paging_simple_numbers" id="DataTables_Table_5_paginate"><a class="paginate_button previous" aria-controls="DataTables_Table_5" data-dt-idx="0" tabindex="0" id="DataTables_Table_5_previous">Previous</a><span><a class="paginate_button " aria-controls="DataTables_Table_5" data-dt-idx="1" tabindex="0">1</a><a class="paginate_button " aria-controls="DataTables_Table_5" data-dt-idx="2" tabindex="0">2</a><a class="paginate_button " aria-controls="DataTables_Table_5" data-dt-idx="3" tabindex="0">3</a><a class="paginate_button current" aria-controls="DataTables_Table_5" data-dt-idx="4" tabindex="0">4</a><a class="paginate_button " aria-controls="DataTables_Table_5" data-dt-idx="5" tabindex="0">5</a></span><a class="paginate_button next" aria-controls="DataTables_Table_5" data-dt-idx="6" tabindex="0" id="DataTables_Table_5_next">Next</a></div></div></div>
+<script type="application/json" data-for="htmlwidget-6">{
+  "x": {
+    "filter": "none",
+    "data": [
+      ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "51", "52", "53", "54", "55", "56", "57", "58", "59", "60", "101", "102", "103", "104", "105", "106", "107", "108", "109", "110", "111", "112", "113", "114", "115", "116", "117", "118", "119", "120"],
+      [5.1, 4.9, 4.7, 4.6, 5, 5.4, 4.6, 5, 4.4, 4.9, 5.4, 4.8, 4.8, 4.3, 5.8, 5.7, 5.4, 5.1, 5.7, 5.1, 7, 6.4, 6.9, 5.5, 6.5, 5.7, 6.3, 4.9, 6.6, 5.2, 6.3, 5.8, 7.1, 6.3, 6.5, 7.6, 4.9, 7.3, 6.7, 7.2, 6.5, 6.4, 6.8, 5.7, 5.8, 6.4, 6.5, 7.7, 7.7, 6],
+      [3.5, 3, 3.2, 3.1, 3.6, 3.9, 3.4, 3.4, 2.9, 3.1, 3.7, 3.4, 3, 3, 4, 4.4, 3.9, 3.5, 3.8, 3.8, 3.2, 3.2, 3.1, 2.3, 2.8, 2.8, 3.3, 2.4, 2.9, 2.7, 3.3, 2.7, 3, 2.9, 3, 3, 2.5, 2.9, 2.5, 3.6, 3.2, 2.7, 3, 2.5, 2.8, 3.2, 3, 3.8, 2.6, 2.2],
+      [1.4, 1.4, 1.3, 1.5, 1.4, 1.7, 1.4, 1.5, 1.4, 1.5, 1.5, 1.6, 1.4, 1.1, 1.2, 1.5, 1.3, 1.4, 1.7, 1.5, 4.7, 4.5, 4.9, 4, 4.6, 4.5, 4.7, 3.3, 4.6, 3.9, 6, 5.1, 5.9, 5.6, 5.8, 6.6, 4.5, 6.3, 5.8, 6.1, 5.1, 5.3, 5.5, 5, 5.1, 5.3, 5.5, 6.7, 6.9, 5],
+      [0.2, 0.2, 0.2, 0.2, 0.2, 0.4, 0.3, 0.2, 0.2, 0.1, 0.2, 0.2, 0.1, 0.1, 0.2, 0.4, 0.4, 0.3, 0.3, 0.3, 1.4, 1.5, 1.5, 1.3, 1.5, 1.3, 1.6, 1, 1.3, 1.4, 2.5, 1.9, 2.1, 1.8, 2.2, 2.1, 1.7, 1.8, 1.8, 2.5, 2, 1.9, 2.1, 2, 2.4, 2.3, 1.8, 2.2, 2.3, 1.5],
+      ["setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "setosa", "versicolor", "versicolor", "versicolor", "versicolor", "versicolor", "versicolor", "versicolor", "versicolor", "versicolor", "versicolor", "virginica", "virginica", "virginica", "virginica", "virginica", "virginica", "virginica", "virginica", "virginica", "virginica", "virginica", "virginica", "virginica", "virginica", "virginica", "virginica", "virginica", "virginica", "virginica", "virginica"]
+    ],
+    "container": "<table class=\"display\">\n  <thead>\n    <tr>\n      <th> </th>\n      <th>Sepal.Length</th>\n      <th>Sepal.Width</th>\n      <th>Petal.Length</th>\n      <th>Petal.Width</th>\n      <th>Species</th>\n    </tr>\n  </thead>\n</table>",
+    "options": {
+      "columnDefs": [
+        {
+          "targets": 5,
+          "render": "function(data, type, row, meta) {\nreturn type === 'display' && data.length > 6 ?\n'<span title=\"' + data + '\">' + data.substr(0, 6) + '...</span>' : data;\n}"
+        },
+        {
+          "className": "dt-right",
+          "targets": [1, 2, 3, 4]
+        },
+        {
+          "orderable": false,
+          "targets": 0
+        }
+      ],
+      "order": [],
+      "autoWidth": false,
+      "orderClasses": false
+    },
+    "callback": "function(table) {\ntable.page(3).draw(false);\n}"
+  },
+  "evals": ["options.columnDefs.0.render", "callback"],
+  "jsHooks": []
+}</script>
+<p>We used the <code>callback</code> argument in <code>datatable()</code> above, to navigate to the 4th page after the table is created. The index <code>3</code> in <code>table.page(3)</code> means the 4th page.</p>
+</div>
+<div id="row-rendering" class="section level2">
+<h2><span class="header-section-number">4.5</span> Row Rendering</h2>
+<p>Similarly, we can define how to render data in the rows using the <code>rowCallback</code> option. In the following example, we display some big numbers, format the 3rd column as currency, and order by this column:</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="https://rstudio.github.io/DT/options.html#cb10-1"></a>m =<span class="st"> </span><span class="kw">as.data.frame</span>(<span class="kw">matrix</span>(<span class="kw">round</span>(<span class="kw">rnorm</span>(<span class="dv">100</span>, <span class="fl">1e5</span>, <span class="fl">1e6</span>)), <span class="dv">20</span>))</span>
+<span id="cb10-2"><a href="https://rstudio.github.io/DT/options.html#cb10-2"></a><span class="kw">datatable</span>(m, <span class="dt">options =</span> <span class="kw">list</span>(</span>
+<span id="cb10-3"><a href="https://rstudio.github.io/DT/options.html#cb10-3"></a>  <span class="dt">rowCallback =</span> <span class="kw">JS</span>(</span>
+<span id="cb10-4"><a href="https://rstudio.github.io/DT/options.html#cb10-4"></a>    <span class="st">"function(row, data) {"</span>,</span>
+<span id="cb10-5"><a href="https://rstudio.github.io/DT/options.html#cb10-5"></a>    <span class="st">"var num = '$' + data[3].toString().replace(/</span><span class="ch">\\</span><span class="st">B(?=(</span><span class="ch">\\</span><span class="st">d{3})+(?!</span><span class="ch">\\</span><span class="st">d))/g, ',');"</span>,</span>
+<span id="cb10-6"><a href="https://rstudio.github.io/DT/options.html#cb10-6"></a>    <span class="st">"$('td:eq(3)', row).html(num);"</span>,</span>
+<span id="cb10-7"><a href="https://rstudio.github.io/DT/options.html#cb10-7"></a>    <span class="st">"}"</span>)</span>
+<span id="cb10-8"><a href="https://rstudio.github.io/DT/options.html#cb10-8"></a>), <span class="dt">callback =</span> <span class="kw">JS</span>(<span class="st">"table.order([3, 'asc']).draw();"</span>))</span></code></pre>
+<div id="htmlwidget-7" style="width:100%;height:auto;" class="datatables html-widget html-widget-static-bound"><div id="DataTables_Table_6_wrapper" class="dataTables_wrapper no-footer"><div class="dataTables_length" id="DataTables_Table_6_length"><label>Show <select name="DataTables_Table_6_length" aria-controls="DataTables_Table_6" class=""><option value="10">10</option><option value="25">25</option><option value="50">50</option><option value="100">100</option></select> entries</label></div><div id="DataTables_Table_6_filter" class="dataTables_filter"><label>Search:<input type="search" class="" placeholder="" aria-controls="DataTables_Table_6"></label></div><table class="display dataTable no-footer" id="DataTables_Table_6" role="grid" aria-describedby="DataTables_Table_6_info">
+  <thead>
+    <tr role="row"><th class="sorting_disabled" rowspan="1" colspan="1" aria-label=" "> </th><th class="dt-right sorting" tabindex="0" aria-controls="DataTables_Table_6" rowspan="1" colspan="1" aria-label="V1: activate to sort column ascending">V1</th><th class="dt-right sorting" tabindex="0" aria-controls="DataTables_Table_6" rowspan="1" colspan="1" aria-label="V2: activate to sort column ascending">V2</th><th class="dt-right sorting_asc" tabindex="0" aria-controls="DataTables_Table_6" rowspan="1" colspan="1" aria-label="V3: activate to sort column descending" aria-sort="ascending">V3</th><th class="dt-right sorting" tabindex="0" aria-controls="DataTables_Table_6" rowspan="1" colspan="1" aria-label="V4: activate to sort column ascending">V4</th><th class="dt-right sorting" tabindex="0" aria-controls="DataTables_Table_6" rowspan="1" colspan="1" aria-label="V5: activate to sort column ascending">V5</th></tr>
+  </thead>
+<tbody><tr role="row" class="odd"><td>17</td><td class=" dt-right">597850</td><td class=" dt-right">653918</td><td class=" dt-right">$-1,448,753</td><td class=" dt-right">-184773</td><td class=" dt-right">2287333</td></tr><tr role="row" class="even"><td>3</td><td class=" dt-right">1658708</td><td class=" dt-right">-926004</td><td class=" dt-right">$-1,165,396</td><td class=" dt-right">-233207</td><td class=" dt-right">-270660</td></tr><tr role="row" class="odd"><td>6</td><td class=" dt-right">1815065</td><td class=" dt-right">-1586693</td><td class=" dt-right">$-1,023,109</td><td class=" dt-right">403529</td><td class=" dt-right">431782</td></tr><tr role="row" class="even"><td>1</td><td class=" dt-right">-460476</td><td class=" dt-right">-967824</td><td class=" dt-right">$-594,707</td><td class=" dt-right">479639</td><td class=" dt-right">105764</td></tr><tr role="row" class="odd"><td>8</td><td class=" dt-right">-1165061</td><td class=" dt-right">253373</td><td class=" dt-right">$-366,655</td><td class=" dt-right">153004</td><td class=" dt-right">535181</td></tr><tr role="row" class="even"><td>7</td><td class=" dt-right">560916</td><td class=" dt-right">937787</td><td class=" dt-right">$-302,885</td><td class=" dt-right">548210</td><td class=" dt-right">1196839</td></tr><tr role="row" class="odd"><td>15</td><td class=" dt-right">-455841</td><td class=" dt-right">921581</td><td class=" dt-right">$-125,771</td><td class=" dt-right">-588009</td><td class=" dt-right">1460652</td></tr><tr role="row" class="even"><td>2</td><td class=" dt-right">-130177</td><td class=" dt-right">-117975</td><td class=" dt-right">$-107,917</td><td class=" dt-right">-402323</td><td class=" dt-right">485280</td></tr><tr role="row" class="odd"><td>10</td><td class=" dt-right">-345662</td><td class=" dt-right">1353815</td><td class=" dt-right">$16,631</td><td class=" dt-right">2150085</td><td class=" dt-right">1248808</td></tr><tr role="row" class="even"><td>13</td><td class=" dt-right">500771</td><td class=" dt-right">995126</td><td class=" dt-right">$57,130</td><td class=" dt-right">1105739</td><td class=" dt-right">338732</td></tr></tbody></table><div class="dataTables_info" id="DataTables_Table_6_info" role="status" aria-live="polite">Showing 1 to 10 of 20 entries</div><div class="dataTables_paginate paging_simple_numbers" id="DataTables_Table_6_paginate"><a class="paginate_button previous disabled" aria-controls="DataTables_Table_6" data-dt-idx="0" tabindex="-1" id="DataTables_Table_6_previous">Previous</a><span><a class="paginate_button current" aria-controls="DataTables_Table_6" data-dt-idx="1" tabindex="0">1</a><a class="paginate_button " aria-controls="DataTables_Table_6" data-dt-idx="2" tabindex="0">2</a></span><a class="paginate_button next" aria-controls="DataTables_Table_6" data-dt-idx="3" tabindex="0" id="DataTables_Table_6_next">Next</a></div></div></div>
+<script type="application/json" data-for="htmlwidget-7">{
+  "x": {
+    "filter": "none",
+    "data": [
+      ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20"],
+      [-460476, -130177, 1658708, 170508, 229288, 1815065, 560916, -1165061, -586853, -345662, 1324082, 459814, 500771, 210683, -455841, 1886913, 597850, -1866617, 801356, -372791],
+      [-967824, -117975, -926004, -628891, -525039, -1586693, 937787, 253373, -1038137, 1353815, 526464, -195071, 995126, 978133, 921581, 788640, 653918, 38088, -205963, -280471],
+      [-594707, -107917, -1165396, 2268956, 1307962, -1023109, -302885, -366655, 879965, 16631, 353319, 71453, 57130, 1468602, -125771, 1616471, -1448753, 684614, 223854, 315942],
+      [479639, -402323, -233207, -918575, -971791, 403529, 548210, 153004, 1022267, 2150085, -391031, -2209169, 1105739, -609201, -588009, 1125571, -184773, -1120718, 281303, -38891],
+      [105764, 485280, -270660, 744377, -120487, 431782, 1196839, 535181, -225932, 1248808, 1093504, 648397, 338732, -527906, 1460652, -500260, 2287333, 1632611, -135700, -926421]
+    ],
+    "container": "<table class=\"display\">\n  <thead>\n    <tr>\n      <th> </th>\n      <th>V1</th>\n      <th>V2</th>\n      <th>V3</th>\n      <th>V4</th>\n      <th>V5</th>\n    </tr>\n  </thead>\n</table>",
+    "options": {
+      "rowCallback": "function(row, data) {\nvar num = '$' + data[3].toString().replace(/\\B(?=(\\d{3})+(?!\\d))/g, ',');\n$('td:eq(3)', row).html(num);\n}",
+      "columnDefs": [
+        {
+          "className": "dt-right",
+          "targets": [1, 2, 3, 4, 5]
+        },
+        {
+          "orderable": false,
+          "targets": 0
+        }
+      ],
+      "order": [],
+      "autoWidth": false,
+      "orderClasses": false
+    },
+    "callback": "function(table) {\ntable.order([3, 'asc']).draw();\n}"
+  },
+  "evals": ["options.rowCallback", "callback"],
+  "jsHooks": []
+}</script>
+<p>You need to learn JavaScript regular expressions to understand the above callback function. Basically, it means to add a comma after every 3 decimals, and add a prefix <code>$</code> to the number. You should know <code>data[2]</code> means the 3rd element in the row now.</p>
+<p>Since it is common for users to format numbers in the data columns, we have provided a few simple helper <a href="https://rstudio.github.io/DT/functions.html">functions</a> (e.g.&nbsp;<code>formatCurrency()</code>) in this package to do these tasks in a much easier way, so you do not have to write the JavaScript code by yourself.</p>
+</div>
+<div id="more-examples" class="section level2">
+<h2><span class="header-section-number">4.6</span> More Examples</h2>
+<p>We prepare more examples in this section as users ask questions:</p>
+<ol style="list-style-type: decimal">
+<li><a href="https://rstudio.github.io/DT/004-i18n.html">UI language and internationalization</a></li>
+<li><a href="https://rstudio.github.io/DT/006-highlight.html">Search result highlighting</a></li>
+<li><a href="https://rstudio.github.io/DT/007-search.html">Search options (regular expressions and case-sensitive searching)</a></li>
+<li><a href="https://rstudio.github.io/DT/009-searchable.html">Disable searching for individual columns</a></li>
+</ol>
+</div>
+</div>
+<div class="footnotes">
+<hr>
+<ol>
+<li id="fn1"><p>To know more about <code>columnDefs</code> and <code>className</code>, see <a href="http://datatables.net/reference/option/columns.className">this reference page</a>.<a href="https://rstudio.github.io/DT/options.html#fnref1" class="footnote-back">↩︎</a></p></li>
+<li id="fn2"><p>See the documentation for <a href="http://datatables.net/reference/option/columns.render">columns.render</a>.<a href="https://rstudio.github.io/DT/options.html#fnref2" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
+
+<script src="./DataTables Options_files/script-10.js"></script>
+
+
+
+</div>
+
+<script src="./DataTables Options_files/script-8.js"></script>
+
+<!-- tabsets -->
+
+<script src="./DataTables Options_files/script-9.js"></script>
+
+<!-- code folding -->
+
+
+
+
+
+</body></html>

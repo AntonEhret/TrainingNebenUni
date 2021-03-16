@@ -1,0 +1,207 @@
+---
+title: "ML with Caret"
+author: "Anton"
+output: 
+        html_document:
+          toc: true
+          theme: united
+          toc_float: true
+          toc_depth: 5
+          highlight: tango
+          
+---
+<head>
+			<meta charset="utf-8"/>
+			<title>Case Study Non-linear Models</title>
+			<style> 
+      	body {
+      		padding-left: 2.5%;
+      		padding-right: 10%;
+      	}
+
+				h1 {
+					font-size: 32px;
+				}
+
+				h2 {
+					font-size: 28px;
+					color: darkblue;
+				}
+				h3 {
+					font-size: 22px;
+					color: darkblue;
+				}
+				h4 {
+				  font-size: 18px;
+				}
+				h5 {
+				  font-size: 16px;
+				}
+			</style>
+		</head>
+<body>
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_knit$set(root.dir = normalizePath("/Users/antonehret/Desktop/datensets"))
+```
+<h1>Intro To Machine-Learning</h1>
+<br/>
+<strong>by Dave Langer</strong>
+<br/>
+<h2>Load Data</h2>
+```{r message=FALSE, warning=FALSE, tidy=TRUE}
+library(caret)
+library(doSNOW)
+library(tidyverse)
+library(tidymodels)
+trainDf <- read.csv("train.csv")
+glimpse(trainDf)
+```
+<br/> 
+<h2>Data Wrangling</h2>
+```{r, tidy=TRUE}
+#' *Missing data*
+    table(is.na(trainDf)) #for checking nr of missing values
+    library(DataExplorer) 
+    plot_missing(trainDf)
+    
+    trainDf$MissingAge <- ifelse(is.na(trainDf$Age),
+                           "Y", "N") #we save feature tracking missing values
+#' *Replace missing embarked values with mode*
+    table(trainDf$Embarked)
+    trainDf$Embarked[trainDf$Embarked == ""] <- "S" #we now do not have an empty name
+    
+#' *Add a feature for family size*
+    trainDf$FamilySize <- 1 + trainDf$SibSp + trainDf$Parch
+    
+#' *Setting up factors*
+    selected_var <- c("Survived", "Pclass", "Sex", "Embarked", "MissingAge") #select variables that are do be turned into categorical variables, according to their description
+    for (i in selected_var){
+      trainDf[,i] <- as.factor(trainDf[,i])
+    } 
+
+#' *Subset data to features we wish to keep/use.*
+    features <- c("Survived", "Pclass", "Sex", "Age", "SibSp",
+              "Parch", "Fare", "Embarked", "MissingAge",
+              "FamilySize")
+    trainDf <- trainDf[, features]
+    glimpse(trainDf)
+```
+<br/>
+<br/>
+<h2>Imputing Missing Ages</h2>
+<br/> 
+Caret supports a number of mechanisms for imputing (i.e., prediction) missing values. Leverage bagged desicion trees to impute missing values for the Age feature.
+However, the here suggested way doesnt work. We get an error: "Error in str2lang(x) : <text>:1:18: unexpected symbol 1: NameAbbing - Mr. Anthony ^". Subbing the colnames() by some other characters does not help. Therefore we will use KNN imputation.
+<em>1. Transforming all features into dummy variables</em>
+```{r, tidy=TRUE}
+    # dummy.vars <- dummyVars(~ ., data = trainDf[, -1])
+    # train.dummy <- predict(dummy.vars, trainDf[, -1])
+    # glimpse(train.dummy)
+```
+<br/>
+<em>2. Imputing</em>
+```{r, tidy=TRUE}
+#' *
+    # colnames(train.dummy) <- gsub(",", " -", colnames(train.dummy)) #otherwise we get an error for pre
+    # colnames(train.dummy) <- gsub(" ^", "", colnames(train.dummy))
+    # 
+    # pre.process <- preProcess(train.dummy, method = "bagImpute")
+    # imputed.data <- predict(pre.process, train.dummy)
+    # View(imputed.data)
+    # str(train.dummy)
+
+    # 
+    # train$Age <- imputed.data[, 6]
+    # glimpse(train)
+```
+<br/>
+<em>KNN imputation</em>
+```{r, tidy=TRUE}
+    library(DMwR)
+    trainDf = knnImputation(trainDf, k=10) #knn imputation
+    plot_missing(trainDf)
+    glimpse(trainDf)
+```
+<br/>
+<br/>
+<h2>Splitting Data</h2>
+<br/> 
+We can use caret to create a 70/30 split of the training data, keeping the proportions of the survuived class lablel the same across splits.
+```{r, tidy=TRUE}
+#' *splitting the Data*
+#' setting @index, constraint to similar proportions of $Survived
+    index <- createDataPartition(trainDf$Survived
+                                 , times = 1
+                                 , p = 0.7
+                                 , list = FALSE)
+    titanic.train <- trainDf[index,]
+    titanic.test <- trainDf[-index,]
+
+#' checking @proportions of $Survived
+    prop.table(table(trainDf$Survived))
+    prop.table(table(titanic.train$Survived))
+    prop.table(table(titanic.test$Survived))
+#'  They are all the same
+```
+<br/>
+<br/>
+<h2>Train Model</h2>
+<br/> 
+We can set caret to perform 10-fold cross validation repeated three times and use a grid search for the optimal model hyperparameter values.
+<br/> 
+<em>trainControl() controls the computational nuances of the train() function.</em>
+```{r, tidy=TRUE}
+    train.control <- trainControl(method = "repeatedcv" #method of crosssvalidation repeated multiple times
+                              , number = 10 #number of folds in CV
+                              , repeats = 3 #how many times should the cv be repeated
+                              , search = "grid") #tuning parameter is determined along grid, not randomly
+```
+<br/> 
+Leverage a grid search of hyperparameters for xgboost. See this <a href= "https://www.slideshare.net/odsc/owen-zhangopen-sourcetoolsanddscompetitions1" target="_blank">presentation</a> for more information.
+<br/>
+<em>expand.grid() creates a data frame from all combinations of the supplied vectors or factors. See the description of the return value for precise details of the way this is done.</em>
+```{r, tidy=TRUE}
+    tune.grid <- expand.grid(eta = c(0.05, 0.075, 0.1)
+                             , nrounds = c(50, 75, 100)
+                             , max_depth = 6:8
+                             , min_child_weight = c(2.0, 2.25, 2.5)
+                             , colsample_bytree = c(0.3, 0.4, 0.5)
+                             , gamma = 0
+                             , subsample = 1)
+    head(tune.grid)
+```
+<br/>
+Use the doSNOW package to enable caret to train in parallel. 
+While there are many package options in this space, doSNOW has the advantage of working on both Windows and Mac OS X.
+Create a socket cluster using 10 processes.
+NOTE - Tune this number based on the number of cores/threads available on your machine!
+```{r, tidy=TRUE}
+#' Setting up clustoer with 10 nodes on localhost
+    cl <- makeCluster(10, type = "SOCK")
+#' Register cluster so that caret will know to train in parallel.
+    registerDoSNOW(cl)
+```
+<br/>
+Train the xbgboost model using a 10-fold CV repeated 3 times and a hyperparameter grid seach to train the optimal model.
+```{r, tidy=TRUE}
+    caret.cv <- train(Survived ~ ., 
+                      data = titanic.train,
+                      method = "xgbTree",
+                      tuneGrid = tune.grid,
+                      trControl = train.control)
+    stopCluster(cl)
+#' Examining the caret's processing results
+    summary(caret.cv)
+```
+<br/>
+Makre predictions on the test set using a xgboost model trained on all 625 rows of the training set using the found optimal hyperparameter values.
+```{r, tidy=TRUE}
+    preds <- predict(caret.cv, titanic.test)
+```
+<br/>
+Using carets confusionMatrix() to estiate the effectiveness of this model on unseed, new data.
+```{r, tidy=TRUE}
+    confusionMatrix(preds, titanic.test$Survived)
+```
+</body>

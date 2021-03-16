@@ -1,0 +1,390 @@
+---
+title: "Building Interactive Apps with Shiny and R"
+author: "Anton"
+output:
+  pdf_document:
+    toc: yes
+    toc_depth: '5'
+  html_document:
+    toc: yes
+    theme: united
+    toc_float: yes
+    toc_depth: 5
+    highlight: tango
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+```{r setup, include=FALSE}
+rm(list=ls())
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+<br/> <br/>
+
+## Introduction
+
+<br/>
+
+::: {.exercise}
+We are going to be using the library shiny
+:::
+
+```{r , tidy=TRUE}
+library(shiny)
+```
+
+<br/> Every shiny app has different files:
+
+-   ui.R
+-   server.R
+-   global.R
+
+### ui.R
+
+Here the User Interface is defined. We define things like inputs and
+outputs. Anything we want to show the user on the screen is defined
+here.
+
+### server.R
+
+Here we create the objects that are then going to be shown from the ui
+file. Here we have functions of inputs and outputs. Any output we create
+here gets displayed via the ui file.
+
+### global.R
+
+A shiny app can also have an optional script, called global.R where you
+can load static data, define variables and functions and load libraries.
+Here you put things that you need to load once in the beginning but do
+not need for every step, like e.g. big data loads.
+
+## Shiny inputs
+
+The following code belongs into the ui.R script
+
+Inputs are the way a user can feed data to the shiny app. This can be
+text or entering a number, choose date... Below you can see a selection
+of possible inputs
+
+```{r , tidy=TRUE}
+fluidPage(
+  textInput(inputId = "name", label = "Enter your name:", placeholder = "John Smith"),
+  numericInput(inputId = "age", label = "Enter your age:", value = 30),
+  dateInput(inputId = "birthday", label = "Select your birthday:"),
+  selectInput(inputId = "gender", label = "Choose your gender:", choices = c("Male", "Female")),
+  sliderInput(inputId = "favNumber", label = "Select your favorite number", min = 0, max = 100, step = 1, value = 50)
+)
+```
+
+### Text input
+
+For this we use the function textInput
+
+```{r , tidy=TRUE}
+fluidPage(
+
+  textInput(inputId = "text" #what this input is going to be called in the whole of the app
+            , label = "Enter text" #what is above the box when the user sees the textbox on shiny app, so its basically an introduction
+            , value = "" #default value you want in the box, displayed in the bux. The user has to delete the value before entering his own content.
+            , placeholder = "Enter text here" #also default value, but user does not have to delete before entering own content
+  )
+)
+```
+
+### Numeric input
+
+For this we use the function numericInput. This is very similar to the
+textInput, only that now the user cannot enter a string but only a
+number
+
+```{r , tidy=TRUE}
+fluidPage(
+  
+  numericInput(inputId = "numeric"
+               , label = "Enter number"
+               , value = 5
+               , min = 1, max = 10 #defining a range of possible values that can be put in
+               , step = 1 #defining the steps in which the range goes up or down
+               )
+  
+)
+```
+
+### Checklbox input
+
+For this we use the function checkboxInput(). Here the user can simply
+check or uncheck. Additionally we can use the checkboxGroupInput where
+one can have multiple choices of boxes.
+
+```{r , tidy=TRUE}
+fluidPage(
+  
+  checkboxInput(inputId = "ceckbox"
+                , label = "Klick checkbox"
+                , value = TRUE #T or F for whether the box is checked (T) or unchecked (F) as a default
+                )
+  
+  ,checkboxGroupInput(inputId = "checkbiox.multi"
+                     , label = "Check or uncheck" #here the label acts for all boxes
+                     , choices = c("Choice 1", "Choice 2", "Choice 3") #as a text next to the different boxes
+                     )
+  
+)
+```
+
+### Select input
+
+For this we use the function selectInput(). This gives the user the
+option of a dropdown menu.
+
+```{r , tidy=TRUE}
+fluidPage(
+  
+  selectInput(inputId = "select"
+              , label = "Select your choice"
+              , choices = c("Choice 1", "Choice 2", "Choice 3")
+              , multiple = F #lets user select multiple if its T and one if its F
+              )
+  
+)
+```
+
+### Slider input
+
+For this we use the function sliderInput(). This gives the user the
+option of a number line wirh a min and a max.
+
+```{r , tidy=TRUE}
+fluidPage(
+  
+  sliderInput(inputId = "slider"
+              , label = "Slide here"
+              , min = 1, max = 10
+              , value = 5 #default value the slider is set at
+              , step = 1 #the value by which each step adjusts by
+              )
+  
+)
+```
+
+### Radio button
+
+For this we use the function radioButtons(). This is like a checkbox but
+instead of checking yes or no, the user can select one of the choices
+displayed on the app.
+
+```{r , tidy=TRUE}
+fluidPage(
+  
+  radioButtons(inputId = "radio"
+               , label = "Check your choice"
+               , choices = c("Choice 1", "Choice 2", "Choice 3")
+               )
+  
+)
+```
+
+### Date Input
+
+For this we use the function dateInputs(). Here the user can select a
+date.
+
+```{r , tidy=TRUE}
+fluidPage(
+  
+  dateInput(inputId = "date"
+            , label = "Select date"
+            , value = "2019-01-01"
+              )
+  , dateRangeInput(inputId = "dateRange"
+                   , label = "Select a range"
+                   , start = "2019-01-01"
+                   , end = "2019-01-31")
+  
+)
+```
+
+## Shiny Outputs
+
+Outputs are the easiest way to display information to users.
+
+This is defined in the server.R file.
+
+### Text output
+
+Here we use the function renderText() and dave that into output\$text1
+
+```{r , tidy=TRUE}
+#' *in our server.R*
+function(input, output){
+  
+  output$text1 <- renderText("This is sample text.")
+  output$text2 <- renderText(paste("This is a text", "with a line break", sep ="\n"))
+  
+}
+
+#' *in our ui.R*
+fluidPage(
+  
+  verbatimTextOutput("text1")
+  , verbatimTextOutput("text2")
+  
+)
+```
+
+### Table output
+
+Displaying a table of data in the app
+
+```{r , tidy=TRUE}
+#' *in our server.R*
+function(input, output){
+  
+  data("mtcars") #to load data
+  
+  output$table1 <- renderTable(mtcars) #save table into output$table1
+  
+}
+
+#' *in our ui.R*
+fluidPage(
+  
+  tableOutput("table1")
+  
+)
+```
+
+### Plot output
+
+Displaying a plot of data in the app
+
+```{r , tidy=TRUE}
+#' *in our server.R*
+library(ggplot2)
+
+function(input, output){
+  
+  data("mtcars")
+  
+  output$plot1 <- renderPlot({
+    ggplot(data = mtcars, aes(x=mpg, y=hp)) + geom_point(color = mtcars$cyl)
+  }
+    
+  )
+  
+}
+
+#' *in our ui.R*
+fluidPage(
+  
+  plotOutput("plot1")
+  
+)
+```
+
+### Data table output
+
+Displaying a table in a more selected way than before in the app.
+
+```{r , tidy=TRUE}
+#' *in our server.R*
+library(DT)
+
+function(input, output){
+  
+  data("mtcars")
+  
+  output$dt1 <- renderDT({
+    datatable(mtcars #dataset we are using
+              , options = list(pageLength = 5 #how many rows to show default
+                                     , lengthMenu = c(5,10,15,20) #letting user decide how many rows he wants to see
+                                     )
+              )
+  }
+    
+  )
+  
+}
+
+#' *in our ui.R*
+fluidPage(
+  
+  plotOutput("plot1")
+  
+)
+```
+
+<br/>
+
+## Reactivity
+
+Reactivity is the most important aspect of shiny. It lets the app react
+to certain inputs from the users.
+
+### Reactive outputs
+
+::: {.comment}
+Ractive outputs allow the output to change based on some input the user
+gives you.
+
+A shiny app can be consisting of a UI and a server file, but as well as
+a global file in which the libraries are loaded and similar.
+:::
+
+```{r , tidy=TRUE}
+library(shiny)
+library(ggplot2)
+data("mtcars")
+
+colChoices <- colnames(mtcars)
+```
+
+<br/>
+
+::: {.comment}
+:::
+
+```{r , tidy=TRUE}
+```
+
+<br/>
+
+::: {.comment}
+:::
+
+```{r , tidy=TRUE}
+```
+
+<br/>
+
+::: {.comment}
+:::
+
+```{r , tidy=TRUE}
+```
+
+<br/>
+
+::: {.comment}
+:::
+
+```{r , tidy=TRUE}
+```
+
+<br/>
+
+::: {.comment}
+:::
+
+```{r , tidy=TRUE}
+```
+
+<br/>
+
+::: {.comment}
+:::
+
+```{r , tidy=TRUE}
+```

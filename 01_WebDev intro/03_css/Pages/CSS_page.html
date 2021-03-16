@@ -1,0 +1,60 @@
+<!doctype html>
+	<html>
+		<head>
+			<meta charset="utf-8"/>
+			<meta name="viewport" content="width=device-width, initial-scale=1">
+			<title>Web Development Lesson</title>
+			<link rel="stylesheet" type="text/css" href="../Styles/style.css">
+			<style> 
+				body {
+					padding: 10px 350px 10px 350px
+				}
+
+				h1 {
+					font-size: 48px;
+					text-align: center;
+					font-family: monospace;
+					color: #d80000;
+				}
+
+				ul {
+					font-size: 18px;
+				}
+
+				a {
+					text-decoration: none;
+				}
+
+				a:hover {
+					background-color: yellow;
+					}
+				
+				/*"." for classes*/
+				.list_green { 
+					color: green;
+					font-size: 22 /*always the css of the child element is the ones that is shown. This is called cascading stylesheet.*/
+				}
+
+				/* "#" for IDs */
+				#heading2 { 
+					font-size: 32px;
+					color: #026606;
+				}
+			</style>
+		</head>
+
+		<body>
+			<h1>Web Development Lessons CSS</h1>
+			<div>
+				<h2 id="heading2">CSS Topics to cover</h2>
+				<ul>
+					<li class="list_green">Default Styling (user agent style sheet)</li>
+					<li style="color: red">Inline Styling</li>
+					<li><a href="/Users/antonehret/Desktop/udemy/WebDev intro/03_css/Pages/id_classes_page.html" target="_blank">Id's & Classes</a></li>
+					<li style="color: red">Internal & External styling</li>
+					<li class="list_green">List of CSS Properties</li>
+					<li><a href="Pages/lib_bootstrap_page.html" target="_blank">CSS Framework, introducing Bootstrap</a></li>
+				</ul>
+			</div>
+		</body>
+	</html> 

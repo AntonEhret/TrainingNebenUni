@@ -1,0 +1,267 @@
+---
+title: "R Course"
+author: "Anton"
+date: "2/8/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Video 35
+```{r V 35}
+tage <- c("mo", "di", "mi", "do", "fr")
+temp <- c(22.2, 21, 23, 24, 25)
+regen <- c(TRUE, TRUE, FALSE, FALSE, TRUE)
+
+df <- data.frame(tage, temp, regen)
+df
+str(df)
+```
+Video 36
+```{r V 36}
+#' *Indexierung*
+  df[1,]
+  df[,1]
+  df[,3]
+  df[,"regen"]
+  df$regen
+  df["regen"]
+  df["tage"]
+
+#' *Filtern*
+  subset(df, subset = regen == TRUE)
+  subset(df, subset = temp > 23)
+
+#' *Sortieren*
+  sort.temp <- order(df["temp"])
+  sort.temp
+  df[sort.temp,]
+
+  abst.temp <- order(-df["temp"])
+  df[abst.temp,]
+  
+  sort.temp <- order(df$temp)
+  df[sort.temp,]
+```
+
+Video 37
+```{r V 37}
+#' *Data Frame erstellen*
+leer <- data.frame()
+leer
+c1 <- 1:10
+c2 <- letters[1:10]
+df <- data.frame(spalte.name.1 = c1
+                 , spalte.name.2 = c2)
+
+write.csv(df, file = "ein.datei.name.csv")
+df2 <- read.csv("ein.datei.name.csv")
+
+library(readxl)
+# df.xl <- read_excel("Beispiel.xlsx", sheeet = "Datensatz 1")
+
+#' *Operationen*
+nrow(df)
+ncol(df)
+
+colnames(df)
+rownames(df)
+
+vec <- df[[5,2]]
+
+dfneu <- df[1:5,1:2]
+
+df[[2,"spalte.name.1"]] <- 99999
+df
+
+zeilendf <- df[1,]
+vzeile <- as.numeric(as.vector(df[1,]))
+vzeile
+
+
+autos <- mtcars
+str(autos)
+
+sv1 <- autos$mpg
+sv2 <- autos[, "mpg"]
+sv3 <- autos[,1]
+sv4 <- autos[["mpg"]] #for vector
+autos["mpg"] #for dataframe
+
+df3 <- autos[1]
+head(autos[c("mpg", "cyl")])
+```
+
+Video 38
+```{r V 38}
+#' *Zeile hinzufügen*
+df
+df2 <- data.frame(spalte.name.1 = 2000, spalte.name.2 = "neu")
+df2
+
+dfneu <- rbind(df, df2)
+dfneu
+
+#' *Spalte hinzufühen*
+df$neuespalte <- rep(NA, nrow(df))
+df
+df[,"kopie.von.spalte.2"] <- df$spalte.name.2
+df
+
+df[["spalte1.mal.zwei"]] <- df$spalte.name.1*2
+df4 <- cbind(df, df$spalte.name.1)
+df4
+
+colnames(df)[2] <- "Name der 2. Spalte"
+df
+
+colnames(df) <- c("spalte.1","spalte.2","spalte.3","spalte.4","spalte.5")
+df
+
+head(df, 10)
+df[1:10,]
+df[-2,]
+
+#' *Bedingte Auswahl*
+df[df$spalte.1 > 8,]
+
+df[(df$spalte.1 > 8 & df$spalte.5 > 20),]
+
+subset(df, spalte.1 > 8 & spalte.5 > 20)
+
+#' *Auswahl mehrere Spalten*
+df[, c(1,2,3)]
+df[, c("spalte.1", "spalte.5")]
+df[, -1]
+df[, -c(1,3)]
+
+#' *Fehlende Werte*
+any(is.na(df))
+any(is.na(df$spalte.1))
+df <- df[!is.na(df$spalte.1),]
+df[is.na(df)] <- 0
+df$spalte.3[is.na(df$spalte.3)] <- 999
+```
+
+Video 39
+```{r V 39}
+#' 1
+Alter <- c(25,22,26)
+Gewicht <- c(85,76,62)
+Geschlecht <- c("M", "M", "F")
+
+df <- data.frame(Alter, Gewicht, Geschlecht)
+
+colnames(df) <- c("Sam", "Frank", "Anne")
+df
+
+#' 2
+is.data.frame(df)
+
+#' 3
+as.data.frame(df)
+
+#' 4
+cars <- mtcars
+
+#' 5
+cars[1:6,]
+head(cars, 6)
+...
+```
+
+Video 42
+```{r V 42}
+#' @Listen
+v <- c(1,2,3,4,5)
+m <- matrix(1:10, nrow=2)
+df <- women
+
+class(v)
+class(m)
+class(df)
+
+li <- list(v,m,df)
+
+li <- list(beispiel_vek = v, beispiel_mat = m, beispiel_df = df)
+li
+
+li[1]
+li["beispiel_vek"]
+class(li["beispiel_vek"])
+li[[1]]
+class(li[[1]])
+li$beispiel_vek
+class(li$beispiel_vek)
+
+li[[1]][1]
+
+li[[2]]
+li[[2]][1,]
+li[[2]][1:2,1:2]
+
+li[[3]]["height"]
+
+doppelte_liste <- c(li, li)
+doppelte_liste
+
+str(doppelte_liste)
+```
+
+Video 48
+```{r V 48}
+#' *SQL*
+#' @Syntax @Beispiel
+# library(RODBC)
+# myconn <- odbcConnect("Database_Name", uid = "User_ID",  pwd = "Password")
+# dat <- sqlFetch(myconn, "Table_Name")
+# querydat <- sqlQuer(myconn, "SELECT * FROM table")
+# close(myconn)
+library(RODBC)
+```
+
+Video 49
+```{r V 49}
+#' *Web Scraping*
+library(rvest)
+demo(package="rvest", topic = tripadvisor)
+
+lego_film <- read_html("http://www.imdb.com/title/tt1490017")
+
+review.lego <- lego_film %>% html_node("strong span") %>% html_text() %>% as.numeric()
+```
+
+Video 51
+```{r V 51}
+#' *Logische Operatoren*
+x <- 10
+x > 20
+x < 20
+
+x > 5 & x < 20
+(x > 5) & (x < 20) & (x==10)
+(x > 5) & (x < 20) & (x==11)
+
+(x < 20) | (x==11)
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

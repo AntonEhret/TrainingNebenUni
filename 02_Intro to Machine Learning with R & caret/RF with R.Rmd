@@ -1,0 +1,246 @@
+---
+title: "Random Forest"
+author: "Anton"
+output: 
+        html_document:
+          toc: true
+          theme: united
+          toc_float: true
+          toc_depth: 5
+          highlight: tango
+          
+---
+<head>
+			<meta charset="utf-8"/>
+			<title>Case Study Non-linear Models</title>
+			<style> 
+      	body {
+      		padding-left: 2.5%;
+      		padding-right: 10%;
+      	}
+
+				h1 {
+					font-size: 32px;
+				}
+
+				h2 {
+					font-size: 28px;
+					color: darkblue;
+				}
+				h3 {
+					font-size: 22px;
+					color: darkblue;
+				}
+				h4 {
+				  font-size: 18px;
+				}
+				h5 {
+				  font-size: 16px;
+				}
+			</style>
+		</head>
+<body>
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_knit$set(root.dir = normalizePath("/Users/antonehret/Desktop/datensets"))
+```
+<h1>Random Forest in R</h2>
+<br/>
+<h2>Preparations</h2>
+<br/>
+<h3>Libraries</h3>
+<br/>
+```{r message=FALSE, tidy=TRUE}
+#' *Libraries*
+    library(randomForest)
+    library(caret)
+    library(rpart)
+```
+<br/>
+<h3>Load Data</h3>
+```{r message=FALSE, tidy=TRUE}
+#' *Load Data*
+    train=read.csv("train.csv")
+    test=read.csv("test.csv")
+#' Add "Survived" column to test, to help combine with train data
+    test$Survived=NA
+#' Combine train and test
+    combi=rbind(train,test)
+```
+<br/>
+<h3>Data Wrangling</h3>
+```{r message=FALSE, tidy=TRUE}
+#' *Data Wrangling*
+#' Handling @Name
+#' Convert names to character
+    combi$Name<-as.character(combi$Name)
+#' test of how strsplit works
+    strsplit(combi$Name[1],split='[,.]')
+    strsplit(combi$Name[1],split='[,.]')[[1]]
+    strsplit(combi$Name[1],split='[,.]')[[1]][2]
+    
+#' apply function to dataset. This will isolate title for all rows
+    combi$Title <- sapply(combi$Name, FUN=function(x){strsplit(x,split='[,.]')[[1]][2]})
+    
+#' Handling @title
+#' Apply function to dataset, this will isolate title for all rows
+    combi$Title <- sapply(combi$Name, FUN=function(x){strsplit(x,split='[,.]')[[1]][2]})
+#' remove empty spaces from the 'Title' field
+    combi$Title=gsub(' ','',combi$Title)
+#' Review contents of 'Title' field
+    table(combi$Title)
+#' Reduce 'Title' contenst into fewer categories
+    combi$Title[combi$Title %in% c('Mme', 'Mlle')] <- 'Mlle'
+    combi$Title[combi$Title %in% c('Capt', 'Don', 'Major', 'Sir')] <- 'Sir'
+    combi$Title[combi$Title %in% c('Dona', 'Lady', 'theCountess', 'Jonkheer')] <- 'Lady'
+#' Change Title to a factor
+    combi$Title <- factor(combi$Title)
+
+#' Handling @sibling and @parent/child
+    combi$FamilySize <- combi$SibSp + combi$Parch + 1
+    
+#' Identifying @families by combining last name and family size
+#' identify surname
+    combi$Surname <- sapply(combi$Name, FUN=function(x) {strsplit(x, split='[,.]')[[1]][1]})
+#' combine with family size
+    combi$FamilyID <- paste(as.character(combi$FamilySize), combi$Surname, sep="")
+#' Categorize family size less than 2 as small
+    combi$FamilyID[combi$FamilySize <= 2] <- 'Small'
+#' Review results
+    table(combi$FamilyID)
+#' Further consolidate results (some families may have different last names)
+    famIDs <- data.frame(table(combi$FamilyID))
+    famIDs <- famIDs[famIDs$Freq <= 2,]
+    combi$FamilyID[combi$FamilyID %in% famIDs$Var1] <- 'Small'
+    combi$FamilyID <- factor(combi$FamilyID)
+```
+<br/>
+<h3Taking care of missing values</h3>
+```{r}
+    library(DataExplorer)
+    plot_missing(combi)
+```
+<br/>
+The "Age" variable has a few missing values.
+To use the randomForest package in R, there should be no missing values.
+A quick way of dealing with missing values is to replace them with either the mean or the median of the non-missing values for the variable. In this example, we are replacing the missing values with a prediction, using decision trees.
+<br/>
+```{r, tidy=TRUE}
+    library(rpart)
+    Agefit <- rpart(Age ~ Pclass + Sex + SibSp + Parch + Fare + Embarked + Title + FamilySize
+                    , data=combi[!is.na(combi$Age),]
+                    , method="anova")
+    combi$Age[is.na(combi$Age)] <- predict(Agefit, combi[is.na(combi$Age),])
+    plot_missing(combi) #the missing values from $survived are due to the training dataset
+```
+<br/>
+Check for other missing variables
+```{r , tidy=TRUE}
+#' @Embarked has two blank variables
+#' They are identified using the "which" command
+    which(combi$Embarked == '')
+#' rows 62 and 830 have the blank values for Embarked
+#' they are replaced with the mode of all the values for Embarked, which is 'S'
+    combi$Embarked[c(62,830)] = "S"
+#' convert 'Embarked' to a factor
+    combi$Embarked <- factor(combi$Embarked)
+    
+#' @Fare has one NA value
+    which(is.na(combi$Fare))
+#Replace with median
+    combi$Fare[1044] <- median(combi$Fare, na.rm=TRUE)
+```
+
+<h3>Factor levels for Random Forests</h3>
+<br/>
+Random Forests in R can only digest factors with up to 32 levels.
+If any factor variable has more than 32 levels, the levels need to be redefined to be <=32 or the variable needs to be converted into a continuous one.
+Here we will redefine the levels:
+<br/>
+```{r , tidy=TRUE}
+#' *Checking the Nr of levels*
+    str(combi)
+#' We see that the FamilyID has too many levels (62)
+```
+
+```{r}
+#' *Taking care of FamilyID* 
+#' increase the definition of Small from 2 to 3
+    combi$FamilyID2 <- combi$FamilyID
+    combi$FamilyID2 <- as.character(combi$FamilyID2)
+    combi$FamilyID2[combi$FamilySize <= 3] <- 'Small'
+    combi$FamilyID2 <- factor(combi$FamilyID2)
+    str(combi$FamilyID2) #We now have 22 levels
+```
+<br/>
+<h3>Data splitting</h3>
+Splitting this new dataset back into train and test datasets
+```{r , tidy=TRUE}
+    train <- combi[1:891,]
+    test <- combi[892:1309,]
+```
+<br/>
+<br/>
+<h2>Modelling</h2>
+```{r, tidy=TRUE}
+    set.seed(123)
+    fit <- randomForest(as.factor(Survived) ~ Pclass + Sex + Age + SibSp + Parch + Fare + Embarked + Title + FamilySize + FamilyID2
+                        , data = train
+                        , importance = TRUE #allows us to inspect variable importance
+                        , ntree = 2000) #enables specifying how many trees we want to grow
+    summary(fit)
+    varImpPlot(fit)
+    summary(combi$Title)
+```
+
+    MeanDecreaseAccuracy : Tells us how much the accuracy decreases without the variable on the Y-axis.
+    'Title' causes the most decrease and is therefore the most predictive in nature
+
+    MeanDecreseGini: Measure how pure terminal nodes are.
+    Again the plot tests results after removing each variable, for decrease in Gini value.
+    Variable with the highest value has the highest predictive power
+
+<h2>Performance Evaluation</h2>
+<br/>
+<h3>Confusionmatrix</h3>
+<br/>
+```{r ,tidy=TRUE}
+#' *Confusionmatrix inbuilt into randomForest()*
+    fit[5]
+    fit$confusion
+#' *Confusionmatrix from caret*
+    set.seed(121)
+    library(caret)
+    confusionMatrix(as.factor(fit$predicted), as.factor(train$Survived))
+```
+
+<br/>
+<h2>Tuning the nmodel</h2>
+<br/>
+Creating a new data.frame to contain just the predictors necessary and not all the columns in the original training dataset.
+```{r}
+    train1 <- data.frame(Pclass = train$Pclass
+                         , Survived =train$Survived
+                         , Sex=train$Sex,Age=train$Age
+                         , SibSp=train$SibSp,Parch=train$Parch
+                         , Fare=train$Fare
+                         , Embarked=train$Embarked
+                         , Title=train$Title
+                         , FamilySize=train$FamilySize
+                         , FamilyID2=train$FamilyID2)
+```
+<br/>
+Tuning to get the best value for mtry
+```{r}
+    set.seed(121)
+    tunefit=train(as.factor(Survived)~ .
+                  , data=train1
+                  , method="rf"
+                  , metric="Accuracy"
+                  , tuneGrid=data.frame(mtry=c(2,3,4)))
+    tunefit
+    
+#' *Prediction*
+    prediction=predict(tunefit, newdata=test)
+```
+</body>

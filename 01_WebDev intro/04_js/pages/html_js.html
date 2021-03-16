@@ -1,0 +1,37 @@
+<!doctype html>
+	<html lang="en">
+		<head>
+			<meta charset="utf-8"/>
+			<meta name="viewport" content="width=device-width,initial-scale=1"/>
+			<title>Changing HTML With Javascript</title>
+			<link href="../../style.css" rel='stylesheet' type='text/css'>
+		</head>
+
+		<body>
+			<h1>Changing HTML With Javascript</h1>
+			<p>The most powerful application of Javascript for our use case in this course is to use JS to manipulate HTML.</p>
+			<div id="tutorial">
+				<p>You can change the properties of an element in the DOM using Javascript. In case of changing the properties of particular elements, you need identifiers which can be id (for a unique element) or classes (for a group of element).</p>
+				
+				<p>Let's see this in action now. Click the button below to see what happens.</p>
+				<div>
+					<p><button onClick="showApplication()">Click To View Application</button></p>
+				</div>
+			</div>
+			<div id="application" style="display: none;">
+				<p>The tutorial is now hidden.</p>
+				<button onClick="showTutorial()">Click Here To Show Tutorial</button>
+			</div>
+		</body>
+		<script>
+			function showApplication() {
+				document.getElementById("tutorial").style.display = "none";
+				document.getElementById("application").style.display = "block";
+			}
+
+			function showTutorial() {
+				document.getElementById("tutorial").style.display = "block";
+				document.getElementById("application").style.display = "none";
+			}
+		</script>
+	</html>
